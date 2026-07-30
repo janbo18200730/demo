@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>さばすく‼</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'M PLUS Rounded 1c', sans-serif; background: #000; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        
+        #mainBg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://min-chi.material.jp/mc/materials/background-c/school_in_spring/_school_in_spring_1.jpg') center/cover no-repeat; z-index: 0; }
+        #mainBg::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.3); }
+
+        #titleScreen {
+            animation: titleFadeInDown 1s ease-out;
+        }
+        @keyframes titleFadeInDown {
+            from { opacity: 0; transform: translateY(-40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* UIパーツ */
+        .title-image { max-width: 550px; width: 90%; margin-bottom: 5rem; filter: drop-shadow(0 5px 15px rgba(255,105,180,0.4)); }
+        
+        .title-btn {
+            padding: 1rem 3rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ff1493;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e9 100%);
+            border: 3px solid #ffb3d9;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 300px;
+            font-family: 'M PLUS Rounded 1c', 'Meiryo', sans-serif;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3),
+                        inset 0 2px 5px rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+            display: block;
+            letter-spacing: 0.05em;
+        }
+
+        .title-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+
+        .title-btn:hover::before { left: 100%; }
+
+        .title-btn:hover {
+            background: linear-gradient(135deg, #ffe4e9 0%, #ffd0e0 100%);
+            border-color: #ff69b4;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.5),
+                        inset 0 2px 5px rgba(255, 255, 255, 0.8);
+        }
+
+        /* パネル */
+        .panel-base { 
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            background: linear-gradient(135deg, #fff0f5 0%, #ffffff 100%); padding: 2.5rem; border-radius: 30px; 
+            border: 5px solid #ffb3d9; box-shadow: 0 15px 50px rgba(255, 105, 180, 0.3),
+                        inset 0 2px 10px rgba(255, 255, 255, 0.9); z-index: 500; text-align: center; 
+            min-width: 380px; font-family: 'M PLUS Rounded 1c', 'Meiryo', sans-serif;
+        }
+        .panel-base.active { display: block; animation: popIn 0.3s ease-out; }
+        .panel-base h2 { font-family: 'M PLUS Rounded 1c', 'Meiryo', sans-serif; letter-spacing: 0.05em; }
+        .menu-action-btn {
+            width: 100%;
+            padding: 0.9rem;
+            margin-bottom: 12px;
+            border: 3px solid #ffb3d9;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e9 100%);
+            color: #ff1493;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'M PLUS Rounded 1c', 'Meiryo', sans-serif;
+            letter-spacing: 0.03em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.25),
+                        inset 0 2px 5px rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+        .menu-action-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+        .menu-action-btn:hover::before { left: 100%; }
+        .menu-action-btn:hover {
+            background: linear-gradient(135deg, #ffe4e9 0%, #ffd0e0 100%);
+            border-color: #ff69b4;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(255, 105, 180, 0.4),
+                        inset 0 2px 5px rgba(255, 255, 255, 0.8);
+        }
+        #playerNameInput {
+            width: 100%;
+            padding: 1rem;
+            border: 3px solid #ffb3d9;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-family: 'M PLUS Rounded 1c', 'Meiryo', sans-serif;
+            background: #fffafc;
+            color: #ff1493;
+        }
+        #playerNameInput:focus { outline: none; border-color: #ff69b4; box-shadow: 0 0 8px rgba(255, 105, 180, 0.4); }
+
+        /* 選択肢用 */
+        #choicePanel { z-index: 600; }
+        .choice-btn {
+            width: 100%; padding: 1.2rem; margin-bottom: 15px;
+            background: white; border: 3px solid #ffb3d9; border-radius: 20px;
+            color: #ff1493; font-weight: bold; font-size: 1.1rem; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .choice-btn:hover { background: #fff0f5; transform: scale(1.02); border-color: #ff69b4; }
+
+        /* オーバーレイ */
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 400; backdrop-filter: blur(3px); }
+        .overlay.active { display: block; }
+
+        /* ゲーム画面 */
+        .game-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 50; background-color: #000; }
+        .game-screen.active { display: block; }
+        .novel-container { width: 100%; height: 100%; position: relative; background-size: cover; background-position: center; cursor: pointer; }
+        .text-box {
+            position: absolute; bottom: 0; width: 100%;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e9 100%);
+            border-top: 5px solid #ffb3d9;
+            border-radius: 30px 30px 0 0;
+            padding: 2rem 3rem; z-index: 60; pointer-events: none;
+            box-shadow: 0 -8px 32px rgba(255, 105, 180, 0.3),
+                        inset 0 2px 10px rgba(255, 255, 255, 0.8);
+        }
+        .character-name {
+            color: #ff1493; font-size: 1.6rem; font-weight: 700; margin-bottom: 0.7rem;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+            font-family: 'M PLUS Rounded 1c', 'Meiryo', sans-serif;
+            letter-spacing: 0.08em;
+        }
+        .dialogue-text {
+            color: #444; font-size: 1.3rem; line-height: 1.9; min-height: 4.5em;
+            font-family: 'M PLUS Rounded 1c', 'Meiryo', sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+        .next-indicator {
+            position: absolute;
+            bottom: 18px;
+            right: 28px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffb3d9 0%, #ff69b4 100%);
+            color: #fff;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.5),
+                        inset 0 2px 4px rgba(255, 255, 255, 0.6);
+            border: 2px solid #fff;
+            animation: bounceArrow 1s infinite;
+        }
+        .next-indicator.show { display: flex; }
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
+        }
+        
+        /* 立ち絵のスタイル */
+        .character-sprite { position: absolute; bottom: 50px; height: 95vh; z-index: 5; opacity: 0; transition: opacity 0.4s, left 0.4s, transform 0.4s; pointer-events: none; }
+        .character-sprite.active { opacity: 1; }
+        
+        .pos-4-1 { left: 12%; transform: translateX(-50%); }
+        .pos-4-2 { left: 37%; transform: translateX(-50%); }
+        .pos-4-3 { left: 63%; transform: translateX(-50%); }
+        .pos-4-4 { left: 88%; transform: translateX(-50%); }
+        .center-pos { left: 50%; transform: translateX(-50%); }
+        .left-pos { left: 20%; transform: translateX(-50%); }
+        .right-pos { left: 80%; transform: translateX(-50%); }
+
+        .white-transition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; pointer-events: none; z-index: 1000; transition: opacity 3s; }
+        .white-transition.active { opacity: 1; }
+        .black-transition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; opacity: 0; pointer-events: none; z-index: 1000; transition: opacity 0.4s ease-out; }
+        .black-transition.active { opacity: 1; pointer-events: auto; }
+
+        #menuBtnTop {
+            position: absolute; top: 20px; left: 20px; z-index: 70;
+            padding: 0.6rem 1.4rem; border-radius: 50px; border: 3px solid #ffb3d9;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e9 100%);
+            color: #ff1493; font-weight: 700; cursor: pointer;
+            font-family: 'M PLUS Rounded 1c', 'Meiryo', sans-serif;
+            letter-spacing: 0.03em;
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.25),
+                        inset 0 2px 5px rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+        #menuBtnTop:hover {
+            background: linear-gradient(135deg, #ffe4e9 0%, #ffd0e0 100%);
+            border-color: #ff69b4;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 105, 180, 0.4),
+                        inset 0 2px 5px rgba(255, 255, 255, 0.8);
+        }
+
+        /* オートボタン用スタイル */
+        #autoBtnTop {
+            position: absolute; top: 20px; left: 150px; z-index: 70;
+            padding: 0.6rem 1.4rem; border-radius: 50px; border: 3px solid #ffb3d9;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e9 100%);
+            color: #ff1493; font-weight: 700; cursor: pointer;
+            font-family: 'M PLUS Rounded 1c', 'Meiryo', sans-serif;
+            letter-spacing: 0.03em;
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.25),
+                        inset 0 2px 5px rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+        #autoBtnTop:hover {
+            background: linear-gradient(135deg, #ffe4e9 0%, #ffd0e0 100%);
+            border-color: #ff69b4;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 105, 180, 0.4),
+                        inset 0 2px 5px rgba(255, 255, 255, 0.8);
+        }
+        #autoBtnTop.active {
+            background: linear-gradient(135deg, #ff9ac9 0%, #ff69b4 100%);
+            color: white;
+            border-color: #ff1493;
+        }
+
+        /* チュートリアル画像用スタイル */
+        .tutorial-pointer {
+            position: absolute;
+            z-index: 100;
+            pointer-events: none;
+            display: none;
+            height: 120px;
+        }
+
+        @keyframes popIn { from { transform: translate(-50%, -45%); opacity: 0; } to { transform: translate(-50%, -50%); opacity: 1; } }
+
+        /* ===== 開発者モード ===== */
+        .dev-toggle-btn {
+            position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+            padding: 0.6rem 1rem; border-radius: 50px; border: 2px solid #ff69b4;
+            background: #333; color: #fff; font-weight: bold; cursor: pointer;
+            font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0.85; transition: all 0.2s;
+        }
+        .dev-toggle-btn:hover { opacity: 1; transform: translateY(-2px); }
+
+        .dev-panel {
+            display: none;
+            position: fixed; top: 0; right: 0; width: 340px; height: 100%;
+            background: #fdfdfd; border-left: 4px solid #ffb3d9;
+            box-shadow: -8px 0 30px rgba(0,0,0,0.3);
+            z-index: 9998; overflow-y: auto; padding: 1.2rem;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+        }
+        .dev-panel.active { display: block; }
+        .dev-panel-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 0.8rem; margin-bottom: 1rem; border-bottom: 2px solid #ffb3d9;
+            font-weight: 700; color: #ff1493; font-size: 1.1rem;
+        }
+        .dev-index-badge {
+            background: linear-gradient(135deg, #ff9ac9 0%, #ff69b4 100%);
+            color: #fff;
+            padding: 0.8rem 1rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.4);
+        }
+        .dev-index-badge span { font-size: 1.6rem; }
+        .dev-close-btn {
+            background: none; border: none; font-size: 1.3rem; color: #ff1493; cursor: pointer;
+        }
+        .dev-section {
+            margin-bottom: 1.3rem; padding-bottom: 1rem; border-bottom: 1px dashed #ffd0e0;
+        }
+        .dev-section h4 {
+            color: #ff69b4; font-size: 0.95rem; margin-bottom: 0.6rem;
+        }
+        .dev-pos-info { font-size: 0.75rem; color: #aaa; font-weight: normal; }
+        .dev-row { display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+        .dev-input, #devJumpIndex {
+            flex: 1; padding: 0.5rem; border: 2px solid #ffd0e0; border-radius: 10px;
+            font-family: inherit; font-size: 0.9rem; min-width: 0;
+        }
+        .dev-btn-small {
+            padding: 0.5rem 0.9rem; border: 2px solid #ffb3d9; border-radius: 15px;
+            background: #fff0f5; color: #ff1493; font-weight: bold; cursor: pointer;
+            font-size: 0.85rem; transition: all 0.2s; font-family: inherit;
+        }
+        .dev-btn-small:hover { background: #ffe4e9; }
+        .dev-speed-btn.active { background: #ff69b4; color: #fff; }
+        #devMuteBtn.active { background: #ff69b4; color: #fff; }
+        .dev-chapter-list { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; max-height: 180px; overflow-y: auto; }
+        .dev-chapter-btn {
+            text-align: left; padding: 0.45rem 0.7rem; border: 1px solid #ffd0e0; border-radius: 10px;
+            background: #fff; color: #ff69b4; font-size: 0.78rem; cursor: pointer; font-family: inherit;
+        }
+        .dev-chapter-btn:hover { background: #fff0f5; }
+        .dev-flag-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .dev-flag-row span { width: 42px; font-size: 0.9rem; color: #ff1493; font-weight: bold; }
+        .dev-flag-input { width: 60px; padding: 0.35rem; border: 2px solid #ffd0e0; border-radius: 8px; text-align: center; font-family: inherit; }
+        .dev-btn-tiny {
+            width: 28px; height: 28px; border-radius: 50%; border: 2px solid #ffb3d9;
+            background: #fff0f5; color: #ff1493; font-weight: bold; cursor: pointer; font-family: inherit;
+        }
+        .dev-small-text { font-size: 0.78rem; color: #888; margin-top: 4px; }
+    </style>
+</head>
+<body>
+    <audio id="bgmAudio" src="Mauve.mp3" loop></audio>
+    <div id="mainBg"></div>
+    <div class="white-transition" id="whiteTransition"></div>
+    <div class="black-transition" id="blackTransition"></div>
+    <div class="overlay" id="overlay"></div>
+    
+    <div id="titleScreen" style="text-align: center; position: relative; z-index: 10;">
+        <img src="title.png.png" class="title-image">
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <button class="title-btn" onclick="startGame()">はじめから</button>
+            <button class="title-btn" onclick="openSlotMenu('load')">つづきから</button>
+            <button class="title-btn" onclick="showSettings(true)">設定</button>
+        </div>
+    </div>
+
+    <div class="panel-base" id="nameInputPanel">
+        <h2 style="color:#ff1493; margin-bottom:1.5rem;">あなたの名前は？</h2>
+        <input type="text" id="playerNameInput" placeholder="名前を入力してね" maxlength="10">
+        <button class="menu-action-btn" onclick="confirmPlayerName()">これで決定！</button>
+    </div>
+
+    <div class="panel-base" id="choicePanel">
+        <div id="choiceContainer"></div>
+    </div>
+
+    <div class="panel-base" id="settingsPanel">
+        <h2 id="menuTitle" style="color:#ff1493; margin-bottom:1.2rem;">メニュー</h2>
+        <div style="background: #fff0f5; padding: 12px; border-radius: 15px; margin-bottom: 15px; border: 1px dashed #ffb3d9;">
+            <label style="font-weight:bold; color:#ff69b4; font-size:0.9rem;">BGM音量: <span id="bgmValue">50</span>%</label>
+            <input type="range" id="volumeSlider" min="0" max="100" value="50" style="width:100%" oninput="updateVolume(this.value)">
+        </div>
+        <div style="background: #fff0f5; padding: 12px; border-radius: 15px; margin-bottom: 15px; border: 1px dashed #ffb3d9;">
+            <label style="font-weight:bold; color:#ff69b4; font-size:0.9rem;">オート速度: <span id="autoSpeedValue">普通</span></label>
+            <input type="range" id="autoSpeedSlider" min="1" max="5" value="3" step="1" style="width:100%" oninput="updateAutoSpeed(this.value)">
+        </div>
+        <div style="background: #fff0f5; padding: 12px; border-radius: 15px; margin-bottom: 15px; border: 1px dashed #ffb3d9;">
+            <label style="font-weight:bold; color:#ff69b4; font-size:0.9rem;">文字速度: <span id="textSpeedValue">普通</span></label>
+            <input type="range" id="textSpeedSlider" min="1" max="5" value="3" step="1" style="width:100%" oninput="updateTextSpeed(this.value)">
+        </div>
+        <div id="gameActions">
+            <button class="menu-action-btn" onclick="openSlotMenu('save')">セーブする</button>
+            <button class="menu-action-btn" onclick="returnToTitle()">タイトルへ戻る</button>
+        </div>
+        <div style="background: #f5f5f5; padding: 12px; border-radius: 15px; margin-bottom: 15px; border: 1px dashed #ccc; text-align:left;">
+            <div style="display:flex; gap:6px;">
+                <input type="text" id="devCommandInput" placeholder="" style="flex:1; padding:0.5rem; border:2px solid #ddd; border-radius:10px; font-family:inherit;" onkeydown="if(event.key==='Enter'){runDevCommand(); event.preventDefault();}">
+                <button class="menu-action-btn" style="width:auto; padding:0.5rem 1rem; margin-bottom:0;" onclick="runDevCommand()">実行</button>
+            </div>
+            <div id="devCommandFeedback" style="font-size:0.75rem; color:#aaa; margin-top:6px;"></div>
+        </div>
+        <button class="menu-action-btn" style="background:#ffb3d9; color:white;" onclick="closePanels()">閉じる</button>
+    </div>
+
+    <div class="panel-base" id="slotPanel">
+        <h2 id="slotTitle" style="color:#ff1493; margin-bottom:1.5rem;">スロット選択</h2>
+        <div id="slotList"></div>
+        <button class="menu-action-btn" onclick="closePanels()">戻る</button>
+    </div>
+
+    <div class="game-screen" id="gameScreen">
+        <button id="menuBtnTop" onclick="showSettings(false)">メニュー</button>
+        <button id="autoBtnTop" onclick="toggleAutoMode()">オート OFF</button>
+        <img id="tutorialPointer" class="tutorial-pointer" src="yajirusi-statue of liberty black and_4673179 .png">
+        <div class="novel-container" id="novelContainer" onclick="handleScreenClick()">
+            <img id="characterSprite1" class="character-sprite" src="">
+            <img id="characterSprite2" class="character-sprite" src="">
+            <img id="characterSprite3" class="character-sprite" src="">
+            <img id="characterSprite4" class="character-sprite" src="">
+            <div class="text-box" id="textBox">
+                <div class="character-name" id="characterName"></div>
+                <div class="dialogue-text" id="dialogueText"></div>
+                <div class="next-indicator" id="nextIndicator">💗</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 開発者モード UI ===== -->
+    <div class="dev-panel" id="devPanel">
+        <div class="dev-panel-header">
+            <span>🛠 開発者モード</span>
+            <button class="dev-close-btn" onclick="toggleDevPanel()">✕</button>
+        </div>
+
+        <div class="dev-index-badge">
+            現在のインデックス: <span id="devIndexBig">0</span> / <span id="devIndexMaxBig">0</span>
+        </div>
+
+        <div class="dev-section">
+            <h4>📍 シーンジャンプ <span class="dev-pos-info" id="devPosInfo"></span></h4>
+            <div class="dev-row">
+                <input type="number" id="devJumpIndex" min="0" placeholder="インデックス番号">
+                <button class="dev-btn-small" onclick="devJumpToIndexFromInput()">ジャンプ</button>
+            </div>
+            <div class="dev-small-text">※ジャンプするとシナリオが初期状態から再構築されます（選択肢による分岐挿入はリセット）</div>
+            <div class="dev-chapter-list" id="devChapterList"></div>
+        </div>
+
+        <div class="dev-section">
+            <h4>💗 好感度エディタ</h4>
+            <div class="dev-flag-row">
+                <span>仁奈</span>
+                <button class="dev-btn-tiny" onclick="devAdjustFlag('j', -1)">-</button>
+                <input type="number" id="devAffJinna" class="dev-flag-input" oninput="devSetFlag('j', this.value)">
+                <button class="dev-btn-tiny" onclick="devAdjustFlag('j', 1)">+</button>
+            </div>
+            <div class="dev-flag-row">
+                <span>莉子</span>
+                <button class="dev-btn-tiny" onclick="devAdjustFlag('r', -1)">-</button>
+                <input type="number" id="devAffRiko" class="dev-flag-input" oninput="devSetFlag('r', this.value)">
+                <button class="dev-btn-tiny" onclick="devAdjustFlag('r', 1)">+</button>
+            </div>
+            <div class="dev-flag-row">
+                <span>心葉</span>
+                <button class="dev-btn-tiny" onclick="devAdjustFlag('k', -1)">-</button>
+                <input type="number" id="devAffKonoha" class="dev-flag-input" oninput="devSetFlag('k', this.value)">
+                <button class="dev-btn-tiny" onclick="devAdjustFlag('k', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="dev-section">
+            <h4>💾 デバッグクイックセーブ</h4>
+            <div class="dev-row">
+                <button class="dev-btn-small" onclick="devQuickSave()">クイックセーブ</button>
+                <button class="dev-btn-small" onclick="devQuickLoad()">クイックロード</button>
+            </div>
+            <div id="devQuickSaveInfo" class="dev-small-text">未保存</div>
+        </div>
+
+        <div class="dev-section">
+            <h4>⏱ 演出速度</h4>
+            <div class="dev-row">
+                <button class="dev-btn-small dev-speed-btn" data-mode="instant" onclick="setDevSpeed('instant')">瞬間</button>
+                <button class="dev-btn-small dev-speed-btn" data-mode="fast" onclick="setDevSpeed('fast')">高速</button>
+                <button class="dev-btn-small dev-speed-btn active" data-mode="normal" onclick="setDevSpeed('normal')">通常</button>
+                <button class="dev-btn-small dev-speed-btn" data-mode="slow" onclick="setDevSpeed('slow')">スロー</button>
+            </div>
+            <div class="dev-small-text">テキスト表示速度と背景切替の速さに反映されます</div>
+        </div>
+
+        <div class="dev-section">
+            <h4>🔊 オーディオ確認</h4>
+            <div class="dev-small-text">再生中BGM: <span id="devBgmName">-</span></div>
+            <div class="dev-row" style="margin-top:6px;">
+                <button class="dev-btn-small" onclick="toggleBGMMute()" id="devMuteBtn">ミュート</button>
+            </div>
+            <div class="dev-row" style="margin-top:8px;">
+                <input type="text" id="sePreviewPath" placeholder="ファイル名 (例: se_click.mp3)" class="dev-input">
+            </div>
+            <div class="dev-row">
+                <button class="dev-btn-small" onclick="playSEPreview()">再生</button>
+                <button class="dev-btn-small" onclick="stopSEPreview()">停止</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const bgm = document.getElementById('bgmAudio');
+        bgm.volume = 0.10;
+
+        window.addEventListener('load', () => {
+            bgm.play().catch(() => {
+                const startOnInteraction = () => {
+                    bgm.play().catch(e => console.log('再生失敗:', e));
+                    document.removeEventListener('click', startOnInteraction);
+                    document.removeEventListener('keydown', startOnInteraction);
+                };
+                document.addEventListener('click', startOnInteraction);
+                document.addEventListener('keydown', startOnInteraction);
+            });
+        });
+
+        const SKY_BG = "pngtree-a-beautiful-white-cloud-in-a-blue-sunny-sky-heavenly-background-image_15668162.jpg";
+        const GODDESS_IMAGE = "—Pngtree—statue of liberty black and_4673179.png";
+        const ROOM_IMAGE = "simple_room01.png";
+        const SCHOOL_BEFORE = "_school_in_spring_1.jpg";
+        const ROUKA_IMAGE = "881757.jpg";
+        const AKIRA_IMAGE = "p_kou_32.png";
+        const SUGURU_IMAGE = "p_kento_16.png";
+        const JINNA_IMAGE = "josei_07_a.png";
+        const RIKO_IMAGE = "josei_01_g.png";
+        const SCHOOL_INSIDE = "教室の前の方（日中）.jpg";
+        const MAC_INSIDE = "fast_food_counter02.png";
+        const MAC_TENNAI = "fast_food_inside01.png";
+        const kaerimiti_yuugata = "住宅街２（夕方）.jpg";
+        const konoha_image = "1475826524.png";
+        const benti_image = "学校のベンチ（日中）.jpg";
+
+        const initialScenario = [
+            { type: "changeBackground", url: SKY_BG, wait: 0 },//0
+            { name: "？？？", text: "ここは…？" }, //1
+            { name: "？？？", text: "あら…人間ちゃんじゃない、どこからきたのかしら？" }, //2
+            { name: "？？？", text: "あなたは…？" },//3
+            { name: "女神", text: "私は女神よ。あなた、名前は？" }, //4
+            { name: "？？？", text: "僕は…" }, //5
+            { type: "nameInput" }, //6
+            { name: "{playerName}", text: "{playerName}です。" }, //7
+            { name: "女神", text: "ではこの世界について、説明するわね" },//8
+            { name: "女神", text: "この左上のボタンはメニューボタンよ。セーブしたり、タイトル画面に戻ったり、BGMの音量を調節したり、文字の速度の調整やオート再生の速度も変更できるわよ" }, //9
+            { name: "女神", text: "セーブ機能はセーブするときに名前も設定できるからお好みの名前に設定してよね♡" },//10
+            { name: "女神", text: "何か特定の名前に変えると……まぁこれ以上はネタバレね" }, //11
+            { name: "女神", text: "メニューボタンの隣のボタンはオートボタンでね、押すと物語が自動で進むのよ。OFFにしたい時はもう一度押すといいわよ" }, //12
+            { name: "女神", text: "何か質問はあるかしら？" },   //13
+            { name: "{playerName}", text: "あのぅ…すみません。以前、どこかでお会いしたことが…？" }, //14
+            { name: "女神", text: "あら、もう時間みたいね。ではまたご機嫌よう。" }, //15
+            { type: "changeBackground", url: ROOM_IMAGE, wait: 0 }, //16
+            { name: "{playerName}", text: "（……夢か、にしてもどっかで見たことあるような…？）" },//17
+            { name: "母", text: "そろそろ起きなさ～い" },//18
+            { name: "{playerName}", text: "はーい" },//19
+            { name: "{playerName}", text: "（今日は高校の入学式。）" },//20
+            { name: "{playerName}", text: "（中学では部活のせいで縁がなかった青春を高校生活では送ってやるんだ！）" },//21
+            { type: "transitionBackground", url: SCHOOL_BEFORE, wait: 1000 },//22
+            { type: "transitionBackground", url: ROUKA_IMAGE, wait: 0 },//23
+            { name: "{playerName}", text: "（廊下は新入生たちでごった返していた。皆、クラス発表を確認しようと掲示板の周りに集まっている。）" },//24
+            { name: "{playerName}", text: "えっと……{playerName}……" },//25
+            { name: "？？？", text: "おっ！同じクラスじゃん！" },//26
+            { name: "アキラ", text: "君、{playerName}くんだよね？俺も一年B組なんだ！アキラって言います！どうぞよろしく！" },//27
+            { name: "{playerName}", text: "あ、はい…{playerName}です。よろしくお願いします" },//28
+            { name: "アキラ", text: "よろしくな！もう友達になったから、これから一緒に楽しもうぜ！" },//29
+            { name: "{playerName}", text: "はぁ……はい。" },//30
+            { name: "？？？", text: "おい、アキラ。また初対面の人にいきなり絡んでるのか？" },//31
+            { name: "アキラ", text: "あ、スグル！ちょうど良かった！こっちは{playerName}くん。同じクラスなんだよ！" },//32
+            { name: "スグル", text: "はぁ…まったく。毎度おなじみのパターンだな…俺はスグル。アキラとは中学が一緒だった。どうもよろしく" },//33
+            { name: "{playerName}", text: "{playerName}です。よろしくお願いします" },//34
+            { name: "スグル", text: "ああ、よろしく。でも、アキラには巻き込まれるなよ。この前もいきなりカラオケに連れて行かれて、七時間も付き合わされたからな" },//35
+            { name: "{playerName}", text: "えっ？それはちょっと…" },//36
+            { name: "アキラ", text: "いいじゃん！スグルはいつもこうやって俺の悪口言うんだよ！でも、結局付き合ってくれるんだから優しいんだよな!" },//37
+            { name: "スグル", text: "…ただ、断るのが面倒くさいだけだ" },//38
+            { name: "アキラ", text: "またまたぁ(ﾆﾔﾆﾔ）" },//39
+            { name: "スグル", text: "ちっ…" },//40
+            { name: "{playerName}", text: "でもまぁ、高校生活は楽しみなんです。中学の時は部活ばかりだったので…" },//41
+            { name: "アキラ", text: "そっか！なら、俺が盛り上げてあげるよ！一緒にいろんなことしようぜ！" },//42
+            { name: "スグル", text: "お前の『いろんなこと』って、大概めんどくさいことだろ" },//43
+            { name: "アキラ", text: "ひどいなぁ！俺だって真面目な提案するときだってあるんだから！" },//44
+            { name: "スグル", text: "例えば？" },//45
+            { name: "アキラ", text: "えっと…例えばぁ…あ、そうだ！文化祭の出し物とか！考えたりするの、好きだよ！" },//46
+            { name: "スグル", text: "そういえば…去年、お前が提案した『巨大パフェ早食い競争』は先生にめちゃくちゃ怒られたな" },//47
+            { name: "アキラ", text: "うぅ…それは思い出しくないな" },//48
+            { name: "アキラ", text: "あ！仁奈たちじゃん！おーい、じんな～！" },//49
+            { name: "大井 仁奈", text: "あら、アキラ？ もう友達作ったの？" },//50
+            { name: "小峰 莉子", text: "早いね。さすが陽キャ" },//51
+            { name: "アキラ", text: "やっほー！仁奈と莉子もB組？" },//52
+            { name: "大井 仁奈", text: "ううん。残念ながら、私たちはC組よ" },//53
+            { name: "アキラ", text: "そっかー、それは残念！" },//54
+            { name: "大井 仁奈", text: "…ところで、こちらのお二人は？" },//55
+            { name: "アキラ", text: "紹介する！こっちは{playerName}くんとスグル！二人とも同じB組なんだよ！" },//56
+            { name: "{playerName}", text: "{playerName}です。よろしくお願いします" },//57
+            { name: "スグル", text: "スグルだ。よろしく" },//58
+            { name: "大井 仁奈", text: "まあ、素敵な方たちじゃない！私は大井仁奈。で、こっちが…" },//59
+            { name: "小峰 莉子", text: "莉子です！よろしく！" },//60
+            { name: "大井 仁奈", text: "なんか、{playerName}くんって、とっても爽やかな感じがするわよね。なんでかしら？" },//61
+            { 
+                type: "choice", 
+                choices: [
+                    { 
+                        text: "え？まぁ、はい。そうですね…", j: 2, r: 1,
+                        reactions: [
+                            { name: "大井 仁奈", text: "あら！照れちゃって可愛らしいわね！" },
+                        ]
+                    }, 
+                    { 
+                        text: "うわっ！ナンパ魔だ！", j: -1, r: 0,
+                        reactions: [
+                            { name: "大井 仁奈", text: "ナンパ魔！？私はそんなものじゃないわよ!" },
+                        ]
+                    }, 
+                    { 
+                        text: "仁奈さんこそ、綺麗で見惚れてました", j: 1, r: -1,
+                        reactions: [
+                            { name: "大井 仁奈", text: "まあ！初対面でそんなこと言えちゃうの？" },
+                        ]
+                    },
+                ]
+            }, //62
+            { name: "小峰 莉子", text: "ねぇ仁奈ぁ、{playerName}くん困ってるよ？" },//63
+            { name: "小峰 莉子", text: "もう少し控えめにした方がいいんじゃない？" },//64
+            { name: "アキラ", text: "いいじゃんいいじゃん！仁奈は元々こんな感じだし！" },//65
+            { name: "大井 仁奈", text: "アキラの言う通りよ。ねえ、{playerName}くん？またお話するの楽しみにしてるわね" },//66
+            { name: "小峰 莉子", text: "仁奈ぁ、そろそろ行こう？チャイム鳴っちゃうよ！" },//67
+            { name: "大井 仁奈", text: "もう？仕方ないわね…それじゃ、みんな、また今度！" },//67
+            { name: "{playerName}", text: "…また" },//68
+            { name: "アキラ", text: "あいつ、面白いだろ？男子をからかうの好きなんだよ。" },//69
+            { name: "アキラ", text: "まあ、高校生活は始まったばかりだし、これからいろいろあるさ！" },//70
+            { name: "{playerName}", text: "（三人で廊下を歩きながら、教室へ向かった…）" },//71
+            { type: "transitionBackground", url: SCHOOL_INSIDE, wait: 0 },//72
+            { name: "アキラ", text: "ねぇ、{playerName}くん。さっき、中学の頃は部活で忙しかったって言ってたよね！中学の時は何部だったの？" },//73
+            { name: "{playerName}", text: "バスケ部だったよ" },//74
+            { name: "アキラ", text: "へえ、バスケ部か！カッコいいじゃん！俺はサッカー部だったよ！スグルは…なんていうか、帰宅部って感じだよな！" },//75
+            { name: "スグル", text: "…別に帰宅部じゃない。書道部だった" },//76
+            { name: "アキラ", text: "え？マジで？" },//77
+            { name: "スグル", text: "何かおかしいか？" },//78
+            { name: "アキラ", text: "いやぁ、なんかさ、イメージと違うってだけ！だって、スグルってクールだし、もっと地味な趣味かと思ったよ！" },//79
+            { name: "スグル", text: "書道も十分地味だと思うが…" },//80
+            { name: "アキラ", text: "{playerName}くんはバスケ続けるの？" },//81
+            { name: "{playerName}", text: "うーん、まだ迷ってるんだよね。高校では部活以外のこともしてみたいから" },//82
+            { name: "アキラ", text: "それ、いいね！じゃあ、俺たちと一緒にいろいろしようよ！例えばぁ…一緒にご飯に行ったり…遊びに行ったり！" },//83
+            { name: "{playerName}", text: "うん、ぜひ！いろいろ教えてよ！" },//84
+            { name: "アキラ", text: "おう！任せとけよ！" },//85
+            { name: "先生", text: "は～い。みなさん、座ってくださーい。それでは、これからホームルームを始めます。まずは自己紹介からしましょうか" },//86
+            { name: "{playerName}", text: "（自己紹介が始まり、順番がアキラに回ってきた。アキラは自信満々に立ち上がると、にっこり笑った。）" },//87
+            { name: "アキラ", text: "みんな、初めまして！アキラって言います！趣味は友達と遊ぶことと、新しいことに挑戦すること！これからよろしく！あと、こっちは{playerName}くんとスグル！俺の友達です！" },//88
+            { name: "スグル", text: "くそ…やってくれたな…" },//89
+            { name: "アキラ", text: "あはは！まぁまぁ！" },//90
+            { name: "先生", text: "アキラくん、とても元気ですね。では次、{playerName}くんお願いします" },//91
+            { name: "{playerName}", text: "えっと…{playerName}です…趣味は…特にないです…よろしくお願いします" },//92
+            { name: "アキラ", text: "{playerName}くん、もっと自分をアピールしないとダメだよ～！" },//93
+            { name: "先生", text: "じゃあスグルくん。次、お願いします" },//94
+            { name: "スグル", text: "スグルです。よろしく" },//95
+            { name: "アキラ", text: "す、スグル！もっと話さないのか？" },//96
+            { name: "スグル", text: "別に、これで十分だろ" },//97
+            { name: "アキラ", text: "ちぇ、つまんないやつだなー" },//98
+            { name: "先生", text: "じゃあ次は……" },//99
+            { name: "アキラ", text: "なぁなぁ、{playerName}くん" },//100
+            { name: "アキラ", text: "放課後、みんなでマクドナルド行かない？仁奈たちも誘おうよ！" },//101
+            { name: "{playerName}", text: "え？いいの？" },//102
+            { name: "アキラ", text: "もちろん！これからは友達作りの時間だぜ！" },//103
+            { name: "スグル", text: "…お前ら、静かにしろよ" },//104
+            { name: "アキラ", text: "スグルも来いよ！、な！" },//105
+            { name: "スグル", text: "…ふんっ" },//106
+            { type: "transitionBackground", url: SCHOOL_INSIDE, wait: 0 },//107
+            { name: "アキラ", text: "よしっ！それじゃ、校門前へレッツゴー！仁奈たち、誘ってくるから先行ってて！じゃ、またあとで！" },//108
+            { name: "スグル", text: "おい、アキラ！俺はまだ行くとは…ちっ、もう行きやがった" },//109
+            { name: "{playerName}", text: "アキラくんはいつもこんなにエネルギッシュなの？" },//110
+            { name: "スグル", text: "ああ、中学の時からずっとこんな調子だ。こっちが疲れるくらいにな" },//111
+            { name: "{playerName}", text: "でも、スグルくんも楽しそうだよね" },//112
+            { name: "スグル", text: "…勘違いだ" },//113
+            { type: "transitionBackground", url: SCHOOL_BEFORE, wait: 0 },//114
+            { name: "大井 仁奈", text: "まあ！{playerName}くんも来るんだね！とっても嬉しい！" },//115
+            { 
+                type: "choice", 
+                choices: [
+                    { 
+                        text: "あ、はい…お邪魔します", j: 1, r: 2,
+                        reactions: [
+                            { name: "大井 仁奈", text: "そんなにかしこまらないで！もっと柔らかくいこう！" },
+                            { name: "小峰 莉子", text: "そうそう。もっと柔らかく！、ね！" },
+                            { name: "{playerName}", text: "うん…よろしく！" },
+                        ]
+                    }, 
+                    { 
+                        text: "オホ！オフフヘホヘホロヘヘ！！アア…フッ…フッフーン…フッ…！フーン！！", j: -3, r: -3,
+                        reactions: [
+                            { name: "アキラ", text: "{playerName}くん、落ち着いて！" },
+                        ]
+                    }, 
+                    { 
+                        text: "仁奈さんこそ、来てくれて嬉しいです", j: 2, r: 1,
+                        reactions: [
+                            { name: "大井 仁奈", text: "ふふ、仁奈でいいわよ！" },
+                            { name: "{playerName}", text: "じゃあ…仁奈…" },
+                            { name: "大井 仁奈", text: "うん!よろしく！" },
+                        ]
+                    },
+                ]
+            }, //116
+            { name: "アキラ", text: "それじゃ、行くか！みんな、マクドナルドまでレッツゴー！" },//117
+            { type: "transitionBackground", url: MAC_INSIDE, wait: 0 },//118
+            { name: "アキラ", text: "俺はビッグマックセット！スグルはいつものフィレオフィッシュね！雲雀くんは？仁奈と莉子は？" },//119
+            { name: "大井 仁奈", text: "私はチキンマックナゲットセットで" },//120
+            { name: "小峰 莉子", text: "私はえびフィレオ！" },//121
+            { 
+                type: "choice", 
+                choices: [
+                    { 
+                        text: "じゃあ、俺もチキンマックナゲットセットで", j: 1, r: 0,
+                        reactions: [
+                            { name: "大井 仁奈", text: "{playerName}くん、わかってるわね～！" },
+                        ]
+                    }, 
+                    { 
+                        text: "じゃあ、ダブルチーズバーガーセットで", j: 0, r: 0,
+                    }, 
+                    { 
+                        text: "じゃあ俺も、えびフィレオのセットで", j: 0, r: 1,
+                    },
+                ]
+            }, //122
+            { name: "アキラ", text: "了解！じゃあみんな席についてて！俺が注文してくるから！" },//123
+            { name: "スグル", text: "俺の分は勝手に注文するのかよ…" },//124
+            { type: "transitionBackground", url: MAC_TENNAI, wait: 0 },//125
+            { name: "大井 仁奈", text: "{playerName}くん、アキラくんとはどうやって知り合ったの？" },//126
+            { name: "{playerName}", text: "えっと…クラス発表の掲示板の前で話しかけられて。同じクラスだってわかって、それで仲良くなりました" },//127
+            { name: "大井 仁奈", text: "あらま。アキラくんらしい出会い方ね。彼、人見知りしないから、すぐに友達を作るのよ" },//128
+            { name: "{playerName}", text: "仁奈はどうやって知り合ったんですか？" },//129
+            { name: "大井 仁奈", text: "ん～？中学の時から知り合いなの。同じ塾に通ってて、そこで仲良くなったのよ。莉子ともそこで知り合ったんだから" },//130
+            { name: "{playerName}", text: "昔っからあんな感じなんですね、アキラくんって" },//131
+            { name: "小峰 莉子", text: "そうそう！変わらないだよね、昔っから！" },//132
+            { name: "アキラ", text: "おっまた～！注文完了！" },//133
+            { name: "アキラ", text: "さあさあ、食べよ―ぜ！高校生活最初の食事会だ！" },//134
+            { name: "小峰 莉子", text: "{playerName}くん！趣味とか、ある？" },//135
+            { 
+                type: "choice", 
+                choices: [
+                    { 
+                        text: "ﾝﾝﾝﾝﾝ““‥ﾝﾝﾝ!“““!!!!", j: -2, r: -2,
+                    },
+                    { 
+                        text: "えっと…特にないです。強いて言えば…バスケとかですかね", j: 0, r: 1,
+                        reactions: [
+                            { name: "小峰 莉子", text: "バスケ！いいじゃん！かっこいい！" },
+                        ]
+                    }, 
+                    { 
+                        text: "そうですね…バスケとかですかね", j: 0, r: 1,
+                        reactions: [
+                            { name: "小峰 莉子", text: "バスケ！いいじゃん！かっこいい！" },
+                        ]
+                    }, 
+                ]
+            }, //136
+            { name: "大井 仁奈", text: "…まあ、それじゃあこれから新しい趣味を見つけるといいわね！例えば…えっと、何がいいかしら？" },//137
+            { name: "スグル", text: "部活は続けないって言ってたよな？なら、軽いスポーツとかどうだ？" },//138
+            { name: "大井 仁奈", text: "それなら、たまにみんなでスポーツするのも楽しいわよね！例えば…ボーリングとか！" },//139
+            { name: "小峰 莉子", text: "いいね！それ、最高！今度みんなで行こうよ！" },//140
+            { name: "アキラ", text: "いくいく～！スグルももちろん来るよな？" },//141
+            { name: "スグル", text: "行けたらな…" },//142
+            { name: "アキラ", text: "{playerName}くんは？" },//143
+            { 
+                type: "choice", 
+                choices: [
+                    { 
+                        text: "もちろん、いく！", j: 1, r: 1,
+                        reactions: [
+                            { name: "アキラ", text: "よっしゃ！決まりな！" },
+                        ]
+                    }, 
+                    { 
+                        text: "行けたらな…", j: 0, r: 0,
+                        reactions: [
+                            { name: "スグル", text: "おい！真似するな！" },
+                        ]
+                    }, 
+                    { 
+                        text: "うるせぇ！行こう！", j: -2, r: -2,
+                        reactions: [
+                            { name: "{playerName}", text: "長崎魂！" },
+                            { name: "{playerName}", text: "幅広い学問を学ばせてくれるんですよ！ここがすごい！埼玉メスガキ鯖メン！" },
+                            { name: "{playerName}", text: "（子宮に）行きたい！！！！！！！！！！！！！！！！！！！" },
+                            { name: "アキラ", text: "とりあえず…行くってことで合ってる？" },
+                        ]
+                    },
+                ]
+            }, //144
+            { name: "{playerName}", text: "（談笑しながら食事をし、みんなと別れた後、僕とアキラは家路についた）" },//145
+            { type: "transitionBackground", url: kaerimiti_yuugata, wait: 0 },//146
+            { name: "アキラ", text: "今日は楽しかったな！" },//147
+            { name: "アキラ", text: "じゃ、俺こっちだから！{playerName}くん、また明日な！" },//148
+            { name: "アキラ", text: "あ、そうだ。{playerName}くん！" },//149
+            { name: "{playerName}", text: "…ん？なに？" },//150
+            { name: "アキラ", text: "お互い、呼び捨てにしようよ！" },//151
+            { name: "{playerName}", text: "え？…いいの…？" },//152
+            { name: "アキラ", text: "もちろん！" },//153
+            { name: "アキラ", text: "じゃ、{playerName}！また明日！" },//154
+            { name: "{playerName}", text: "うん、また明日。アキラ" },//155
+            { type: "transitionBackground", url: SCHOOL_INSIDE, wait: 0 },//156
+            { name: "{playerName}", text: "翌日………" },//157
+            { name: "アキラ", text: "おはよう、{playerName}！昨日は楽しかったな！" },//158
+            { name: "アキラ", text: "あ、そうそう！{playerName}、さっき先生が探してたよ！" },//159
+            { name: "{playerName}", text: "え、なんで？" },//160
+            { name: "アキラ", text: "説教じゃな～い？ｗ" },//161
+            { name: "{playerName}", text: "昨日、入学式だったのに…？" },//162
+            { name: "{playerName}", text: "まぁいいや。じゃ、先生のとこいってくる" },//163
+            { name: "アキラ", text: "いってら～！" },//164
+            { name: "スグル", text: "気をつけろよ" },//165
+            { type: "transitionBackground", url: ROUKA_IMAGE, wait: 0 },//166
+            { name: "{playerName}", text: "職員室は…こっちか" },//167
+            { name: "成瀬 心葉", text: "っと" },//168
+            { name: "{playerName}", text: "す、すみません！大丈夫で…" },//169
+            { name: "成瀬 心葉", text: "いや、こちらこそすまない。大丈夫か？" },//170
+            { name: "{playerName}", text: "え、あ…はいっ！大丈夫です。そちらこそ、大丈夫ですか？" },//171
+            { name: "成瀬 心葉", text: "ああ、問題ない。すまなかったな、俺が急に曲がった。" },//172
+            { name: "{playerName}", text: "いえ、僕も前を見てなかったので…" },//173
+            { name: "成瀬 心葉", text: "……一年か？" },//174
+            { name: "{playerName}", text: "はい、一年B組の{playerName}です" },//175
+            { name: "成瀬 心葉", text: "二年の成瀬 心葉だ。よろしく、{playerName}" },//176
+            { name: "{playerName}", text: "よろしくお願いします" },//177
+            { name: "成瀬 心葉", text: "なにか急いでいるのか？" },//178
+            { name: "{playerName}", text: "はい。職員室に用事があって…" },//179
+            { name: "成瀬 心葉", text: "迷ってないか？" },//180
+            { 
+                type: "choice", 
+                choices: [
+                    { 
+                        text: "ちょっとだけ…？", k: 0,
+                        reactions: [
+                            { name: "成瀬 心葉", text: "そうか。ここの階段を下りて右に進むとあるぞ" },
+                            { name: "{playerName}", text: "ありがとうございます" },
+                        ]
+                    }, 
+                    { 
+                        text: "大丈夫です", k: 1,
+                        reactions: [
+                            { name: "成瀬 心葉", text: "そうか" },
+                        ]
+                    }, 
+                    { 
+                        text: "無いで～す", k: -1,
+                        reactions: [
+                            { name: "成瀬 心葉", text: "そうか" },
+                        ]
+                    },
+                ]
+            }, //181
+            { name: "{playerName}", text: "……先輩は、どうしてここに？" },//182
+            { name: "成瀬 心葉", text: "まぁ色々な…" },//183
+            { name: "{playerName}", text: "色々ってなんですか？" },//184
+            { name: "成瀬 心葉", text: "いやまぁ、後輩の恋愛相談を聞いてたんだよ" },//185
+            { name: "成瀬 心葉", text: "恋ってさ、一気に距離詰めたくならないか？" },//186
+            { name: "{playerName}", text: "……" },//187
+            { name: "成瀬 心葉", text: "俺はなる" },//188
+            { name: "成瀬 心葉", text: "好きになったら、待てない" },//189
+            { name: "成瀬 心葉", text: "{playerName}は？どうなんだ？" },//190
+            { name: "{playerName}", text: "え？" },//191
+            { name: "成瀬 心葉", text: "ゆっくり派？" },//192
+            { name: "{playerName}", text: "……多分" },//193
+            { name: "成瀬 心葉", text: "ふふ、そうか" },//194
+            { name: "成瀬 心葉", text: "じゃあ、俺が急すぎたら止めてくれ" },//195
+            { 
+                type: "choice", 
+                choices: [
+                    { 
+                        text: "……はい？", k: 2,
+                        reactions: [
+                            { name: "成瀬 心葉", text: "ふふ…冗談だ" },
+                        ]
+                    }, 
+                    { 
+                        text: "⚔ナイト様⚔待ってます♡", k: -2,
+                        reactions: [
+                            { name: "成瀬 心葉", text: "ああ…そう、なんだな…" },
+                        ]
+                    },
+                    { 
+                        text: "わかりました。頑張ります", k: 1,
+                        reactions: [
+                            { name: "成瀬 心葉", text: "冗談だ。真に受けるな" },
+                        ]
+                    }, 
+                ]
+            }, //196
+            { name: "成瀬 心葉", text: "じゃあな、また会おう。{playerName}" },//197
+            { name: "{playerName}", text: "（……なんだ、今の人。変な人だったなぁ…）" },//198
+            { type: "transitionBackground", url: benti_image, wait: 0 },//199
+            { name: "{playerName}", text: "（放課後…）" },//200
+            { name: "{playerName}", text: "（放課後の中庭で、ベンチに腰掛けてノートを広げていると、影が伸びてくる。" },//201
+            { name: "成瀬 心葉", text: "いた" },
+            { 
+                type: "choice", 
+                choices: [
+                    { 
+                        text: "なにしてるんですか？", k: 1,
+                        reactions: [
+                            { name: "成瀬 心葉", text: "お前に会いに来た" },
+                            { name: "{playerName}", text: "…！？" },
+                            { name: "成瀬 心葉", text: "嘘だ" },
+                            { name: "{playerName}", text: "はぁ…" },
+                        ]
+                    },
+                    { 
+                        text: "……こんにちは", k: 0,
+                    }, 
+                    { 
+                        text: "", k: -2,
+                        reactions: [
+                            { name: "成瀬 心葉", text: "ああ…そう、なんだな…" },
+                        ]
+                    },
+                ]
+            }, //202
+            { name: "成瀬 心葉", text: "ここ、静かで好きなんだ" },//203
+            { name: "{playerName}", text: "先輩も来るんですね" },//204
+            { name: "成瀬 心葉", text: "{playerName}がいるからな" },//205
+            { name: "成瀬 心葉", text: "俺さ" },//206
+            { name: "成瀬 心葉", text: "どっちかというと、女子に好かれるタイプなんだけどさ" },//207
+            { name: "{playerName}", text: "……はい" },//208
+            { name: "成瀬 心葉", text: "でも、正直うっとうしいんだよな" },//209
+            { name: "成瀬 心葉", text: "{playerName}は俺のこと、どう思う？" },//210
+            { name: "成瀬 心葉", text: "男っぽいだろ？" },//211
+            { 
+                type: "choice", 
+                choices: [
+                    { 
+                        text: "まぁ、男っぽくはありますよね", k: 2,
+                        reactions: [
+                            { name: "成瀬 心葉", text: "だろ？" },
+                            { name: "{playerName}", text: "でも" },
+                            { name: "成瀬 心葉", text: "でも？" },
+                            { name: "{playerName}", text: "親しみやすいですね" }
+                        ]
+                    },
+                    { 
+                        text: "そうだね。けれど一つ救いがある。美醜の基準は人によって違うからね", k: -1,
+                    }, 
+                    { 
+                        text: "そうですか？", k: 1,
+                        reactions: [
+                            { name: "{playerName}", text: "あまりそうは思わないですけど…" },
+                            { name: "成瀬 心葉", text: "そ…そう、か？" },
+                        ]
+                    },
+                ]
+            }, //212
+            { name: "成瀬 心葉", text: "……それ" },//213
+            { name: "成瀬 心葉", text: "ズルいな" },//214
+            { name: "{playerName}", text: "え？" },//215
+            { name: "成瀬 心葉", text: "そういうの弱い…" },//216
+            { name: "成瀬 心葉", text: "俺さ、恋すると一直線なんだ" },//好感度シナリオ
+            { name: "{playerName}", text: "知ってます" },
+            { name: "成瀬 心葉", text: "止めなくていいか？" },
+            { name: "{playerName}", text: "……止める理由、ないです" },
+            { name: "成瀬 心葉", text: "よし" },
+            { name: "成瀬 心葉", text: "じゃあ、今日からお前は俺の味方な" },
+            { name: "{playerName}", text: "味方…ですか？" },
+            { name: "成瀬 心葉", text: "そう、味方。一番近い位置の、な" },
+            { name: "成瀬 心葉", text: "近すぎたら、言えよ" },
+            { name: "{playerName}", text: "……今は、大丈夫です" },
+            { name: "成瀬 心葉", text: "ふふ" },
+            { name: "成瀬 心葉", text: "可愛いな、{playerName}" },
+            { name: "{playerName}", text: "からかわないでください" },
+            { name: "成瀬 心葉", text: "本音" },//終わり
+            { name: "成瀬 心葉", text: "なあ" },
+            { name: "{playerName}", text: "はい" },
+            { name: "成瀬 心葉", text: "また、ここ来い" },
+            { 
+                type: "choice", 
+                choices: [
+                    { 
+                        text: "ぼ", k: -1,
+                        reactions: [
+                            { name: "{playerName}", text: "く？？？？？？？？、？？？？、？？？？？？？、？" },
+                            { name: "{playerName}", text: "良いと思～～～～～……うよ" },
+                            { name: "成瀬 心葉", text: "わかった" },
+                        ]
+                    },
+                    { 
+                        text: "先輩が来るなら", k: 3,
+                        reactions: [
+                            { name: "成瀬 心葉", text: "来る" },
+                            { name: "成瀬 心葉", text: "{playerName}がいるなら、な" },
+                        ]
+                    }, 
+                    { 
+                        text: "えぇ…", k: -2,
+                        reactions: [
+                            { name: "{playerName}", text: "嫌か？" },
+                            { name: "成瀬 心葉", text: "まぁ気が向いたら行きますよ" },
+                            { name: "成瀬 心葉", text: "わかった" },
+                        ]
+                    },
+                ]
+            }
+        ];
+
+        let scenario = [];
+        let currentIndex = 0;
+        let affJinna = 0;
+        let affRiko = 0;
+        let affkonoha = 0;
+        let playerName = "雲雀 望斗";
+        let isTyping = false;
+        let isWaitingForInput = false;
+
+        let isAutoMode = false;
+        let autoAdvanceDelay = 3000;
+        const autoSpeedLabels = ['とても遅い', '遅い', '普通', '速い', 'とても速い'];
+        const autoSpeedValues = [6000, 4500, 3000, 1800, 1000];
+        let textSpeedInterval = 60;
+        const textSpeedLabels = ['とても遅い', '遅い', '普通', '速い', 'とても速い'];
+        const textSpeedValues = [110, 85, 60, 35, 15];
+
+        // ===== 開発者モード用の状態 =====
+        let devSpeedMode = 'normal';
+        let sePreviewAudio = null;
+        const DEV_COMMAND = "kaisei";
+
+        const devChapterMarkers = [
+            { label: "0: 女神との出会い", idx: 0 },
+            { label: "14: 目覚め・自室", idx: 14 },
+            { label: "20: 入学式へ", idx: 20 },
+            { label: "24: アキラ登場", idx: 24 },
+            { label: "29: スグル登場", idx: 29 },
+            { label: "48: 仁奈・莉子登場", idx: 48 },
+            { label: "69: 廊下シーン", idx: 69 },
+            { label: "73: 教室内", idx: 73 },
+            { label: "88: 自己紹介", idx: 88 },
+            { label: "100: 放課後の誘い", idx: 100 },
+            { label: "110: 帰り道", idx: 110 },
+            { label: "115: マック前", idx: 115 },
+            { label: "125: 職員室(成瀬心葉)", idx: 125 },
+        ];
+
+        function updateVolume(val) {
+            document.getElementById('bgmValue').textContent = val;
+            // 表示は50%を基準にしているが、実際の音量はその1/5（初期表示50%=実際10%）としてスケーリングする
+            bgm.volume = (val * 0.2) / 100;
+        }
+
+        function updateAutoSpeed(val) {
+            const idx = parseInt(val) - 1;
+            autoAdvanceDelay = autoSpeedValues[idx];
+            document.getElementById('autoSpeedValue').textContent = autoSpeedLabels[idx];
+        }
+
+        function updateTextSpeed(val) {
+            const idx = parseInt(val) - 1;
+            textSpeedInterval = textSpeedValues[idx];
+            document.getElementById('textSpeedValue').textContent = textSpeedLabels[idx];
+        }
+
+        function closePanels() {
+            document.querySelectorAll('.panel-base').forEach(p => p.classList.remove('active'));
+            document.getElementById('overlay').classList.remove('active');
+            isWaitingForInput = false;
+            
+            if (isAutoMode && !isTyping) {
+                checkAutoAdvance();
+            }
+        }
+
+        function showSettings(isTitle) {
+            isWaitingForInput = true;
+            if (window.autoTimer) clearTimeout(window.autoTimer);
+            document.getElementById('gameActions').style.display = isTitle ? 'none' : 'block';
+            document.getElementById('menuTitle').textContent = isTitle ? "設定" : "メニュー";
+            document.getElementById('settingsPanel').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function toggleAutoMode() {
+            isAutoMode = !isAutoMode;
+            const btn = document.getElementById('autoBtnTop');
+            if (isAutoMode) {
+                btn.classList.add('active');
+                btn.textContent = "オート ON";
+                if (!isTyping && !isWaitingForInput) {
+                    checkAutoAdvance();
+                }
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = "オート OFF";
+                if (window.autoTimer) clearTimeout(window.autoTimer);
+            }
+        }
+
+        function checkAutoAdvance() {
+            if (window.autoTimer) clearTimeout(window.autoTimer);
+            if (isAutoMode && !isWaitingForInput && !isTyping) {
+                window.autoTimer = setTimeout(() => {
+                    if (isAutoMode && !isWaitingForInput && !isTyping) {
+                        currentIndex++;
+                        processScenario();
+                    }
+                }, autoAdvanceDelay);
+            }
+        }
+
+        function startGame() {
+            const whiteTransition = document.getElementById('whiteTransition');
+
+            // 先に白で画面を完全に覆う（アニメーションなしで即座に不透明にする）
+            whiteTransition.style.transition = 'none';
+            whiteTransition.classList.add('active');
+            void whiteTransition.offsetWidth; // 強制リフロー（即座に反映させる）
+
+            // 白で隠れている間に画面の中身を切り替える
+            bgm.play().catch(e => console.log("再生失敗:", e));
+            currentIndex = 0; affJinna = 0; affRiko = 0; affkonoha = 0;
+            scenario = JSON.parse(JSON.stringify(initialScenario));
+            document.getElementById('titleScreen').style.display = 'none';
+            document.getElementById('gameScreen').classList.add('active');
+            document.getElementById('novelContainer').style.backgroundImage = `url('${SKY_BG}')`;
+            updateDevFlagsDisplay();
+            updateDevAudioInfo();
+
+            // トランジションを戻して白をフェードアウトさせ、演出として見せる
+            requestAnimationFrame(() => {
+                whiteTransition.style.transition = '';
+                whiteTransition.classList.remove('active');
+            });
+
+            // シナリオ先頭のchangeBackground(同じSKY_BG)は既に処理済みなのでスキップ
+            currentIndex = 1;
+            processScenario();
+        }
+
+        function handleScreenClick() {
+            if (isTyping) { skipTypewriter(); return; }
+            if (isWaitingForInput) return;
+            if (window.autoTimer) clearTimeout(window.autoTimer);
+            currentIndex++;
+            processScenario();
+        }
+
+        function setSprite(imgElement, src, posClass, height = '95vh', bottom = '50px') {
+            imgElement.src = src;
+            imgElement.className = `character-sprite active ${posClass}`;
+            imgElement.style.height = height;
+            imgElement.style.bottom = bottom;
+        }
+
+        function hideSprites() {
+            document.querySelectorAll('.character-sprite').forEach(s => s.classList.remove('active'));
+        }
+
+        function updateUI(skipType) {
+            const data = scenario[currentIndex];
+            if (!data) return;
+
+            const nameStr = data.name ? data.name.replace("{playerName}", playerName) : "";
+            const textStr = data.text ? data.text.replace("{playerName}", playerName) : "";
+            if (data.name !== undefined) document.getElementById('characterName').textContent = nameStr;
+            
+            const s1 = document.getElementById('characterSprite1');
+            const s2 = document.getElementById('characterSprite2');
+            const s3 = document.getElementById('characterSprite3');
+            const s4 = document.getElementById('characterSprite4');
+
+            // チュートリアル画像の表示制御
+            const tutorialPointer = document.getElementById('tutorialPointer');
+            if (currentIndex >= 9 && currentIndex <= 11) {
+                tutorialPointer.style.display = 'block';
+                tutorialPointer.style.top = '75px';
+                tutorialPointer.style.left = '40px';
+            } else if (currentIndex === 12) {
+                tutorialPointer.style.display = 'block';
+                tutorialPointer.style.top = '75px';
+                tutorialPointer.style.left = '160px';
+            } else {
+                tutorialPointer.style.display = 'none';
+            }
+
+            // キャラクター表示制御ロジック
+            if (currentIndex >= 4 && currentIndex <= 15) {
+                hideSprites();
+                setSprite(s1, GODDESS_IMAGE, 'center-pos');
+            } else if (currentIndex >= 27 && currentIndex <= 30) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'center-pos', '180vh', '-70vh');
+            } else if (currentIndex >= 31 && currentIndex <= 49) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
+                setSprite(s2, SUGURU_IMAGE, 'right-pos', '180vh', '-70vh');
+            } else if (currentIndex >= 50 && currentIndex <= 69) {
+                hideSprites();
+                setSprite(s1, JINNA_IMAGE, 'pos-4-1', '180vh', '-70vh');
+                setSprite(s2, RIKO_IMAGE, 'pos-4-2', '180vh', '-70vh');
+                setSprite(s3, AKIRA_IMAGE, 'pos-4-3', '180vh', '-70vh');
+                setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '180vh', '-70vh');
+            } else if (currentIndex >= 71 && currentIndex <= 72) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
+                setSprite(s2, SUGURU_IMAGE, 'right-pos', '180vh', '-70vh');
+            } else if (currentIndex >= 73 && currentIndex <= 87) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
+                setSprite(s2, SUGURU_IMAGE, 'right-pos', '180vh', '-70vh');
+            } else if (currentIndex === 90) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'center-pos', '180vh', '-70vh');
+            } else if (currentIndex >= 91 && currentIndex <= 92) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
+                setSprite(s1, SUGURU_IMAGE, 'center-pos', '180vh', '-70vh');
+            } else if (currentIndex === 95) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'center-pos', '180vh', '-70vh');
+            } else if (currentIndex === 97) {
+                hideSprites();
+                setSprite(s1, SUGURU_IMAGE, 'center-pos', '180vh', '-70vh');
+            } else if (currentIndex >= 98 && currentIndex <= 100) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
+                setSprite(s2, SUGURU_IMAGE, 'right-pos', '180vh', '-70vh');
+            } else if (currentIndex >= 102 && currentIndex <= 105) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'center-pos', '180vh', '-70vh');
+            } else if (currentIndex >= 105 && currentIndex <= 109) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
+                setSprite(s2, SUGURU_IMAGE, 'right-pos', '180vh', '-70vh');
+            } else if (currentIndex >= 110 && currentIndex <= 113) {
+                hideSprites();
+                setSprite(s1, SUGURU_IMAGE, 'center-pos', '180vh', '-70vh');
+            } else if (currentIndex >= 116 && currentIndex <= 127) {
+                hideSprites();
+                setSprite(s1, JINNA_IMAGE, 'pos-4-1', '180vh', '-70vh');
+                setSprite(s2, RIKO_IMAGE, 'pos-4-2', '180vh', '-70vh');
+                setSprite(s3, AKIRA_IMAGE, 'pos-4-3', '180vh', '-70vh');
+                setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '180vh', '-70vh');
+            } else if (currentIndex >= 128 && currentIndex <= 136) {
+                hideSprites();
+                setSprite(s1, JINNA_IMAGE, 'pos-4-1', '180vh', '-70vh');
+                setSprite(s2, RIKO_IMAGE, 'pos-4-2', '180vh', '-70vh');
+                setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '180vh', '-70vh');
+            }  else if (currentIndex >= 137 && currentIndex <= 149) {
+                hideSprites();
+                setSprite(s1, JINNA_IMAGE, 'pos-4-1', '180vh', '-70vh');
+                setSprite(s2, RIKO_IMAGE, 'pos-4-2', '180vh', '-70vh');
+                setSprite(s3, AKIRA_IMAGE, 'pos-4-3', '180vh', '-70vh');
+                setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '180vh', '-70vh');
+            }else if (currentIndex >= 152 && currentIndex <=160) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'center-pos', '180vh', '-70vh');
+            }else if (currentIndex >= 163 && currentIndex <= 170) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
+                setSprite(s2, SUGURU_IMAGE, 'right-pos', '180vh', '-70vh');
+            }else if (currentIndex >= 173) {
+                hideSprites();
+                    setSprite(s1, konoha_image, 'center-pos', '180vh', '-70vh');
+            } else {
+                hideSprites();
+            }
+
+            if (data.text !== undefined) {
+                document.getElementById('textBox').style.display = 'block';
+                if (skipType) {
+                    document.getElementById('dialogueText').textContent = textStr;
+                    isTyping = false; 
+                    showNextIndicator();
+                    checkAutoAdvance();
+                } else {
+                    startTypewriter(textStr);
+                }
+            }
+            updateDevPositionInfo();
+        }
+
+        function showNextIndicator() {
+            const el = document.getElementById('nextIndicator');
+            if (el) el.classList.add('show');
+        }
+
+        function hideNextIndicator() {
+            const el = document.getElementById('nextIndicator');
+            if (el) el.classList.remove('show');
+        }
+
+        function startTypewriter(text) {
+            isTyping = true;
+            hideNextIndicator();
+            const interval = getTypeInterval();
+            const el = document.getElementById('dialogueText');
+            if (window.typeInterval) clearInterval(window.typeInterval);
+            if (window.autoTimer) clearTimeout(window.autoTimer);
+
+            if (interval <= 0) {
+                el.textContent = text;
+                isTyping = false;
+                showNextIndicator();
+                checkAutoAdvance();
+                return;
+            }
+
+            let i = 0;
+            el.textContent = "";
+            window.typeInterval = setInterval(() => {
+                if (i < text.length) el.textContent += text.charAt(i++);
+                else { 
+                    clearInterval(window.typeInterval); 
+                    isTyping = false; 
+                    showNextIndicator();
+                    checkAutoAdvance();
+                }
+            }, interval);
+        }
+
+        function skipTypewriter() {
+            clearInterval(window.typeInterval);
+            const text = scenario[currentIndex].text ? scenario[currentIndex].text.replace("{playerName}", playerName) : "";
+            document.getElementById('dialogueText').textContent = text;
+            isTyping = false;
+            showNextIndicator();
+            checkAutoAdvance();
+        }
+
+        function processScenario(skipType = false) {
+            if (currentIndex >= scenario.length) return;
+            const current = scenario[currentIndex];
+
+            if (current.type === "nameInput") {
+                isWaitingForInput = true;
+                document.getElementById('nameInputPanel').classList.add('active');
+                document.getElementById('overlay').classList.add('active');
+                updateUI(true); 
+            } else if (current.type === "choice") {
+                showChoiceMenu(current.choices);
+            } else if (current.type === "changeBackground") {
+                performBackgroundChange(current.url);
+            } else if (current.type === "transitionBackground") {
+                playTransitionScene(current.url, current.wait || 0);
+            } else {
+                updateUI(skipType);
+            }
+        }
+
+        function showChoiceMenu(choices) {
+            isWaitingForInput = true;
+            const container = document.getElementById('choiceContainer');
+            container.innerHTML = "";
+            choices.forEach((c) => {
+                const btn = document.createElement('button');
+                btn.className = "choice-btn";
+                btn.textContent = c.text;
+                btn.onclick = () => selectChoice(c);
+                container.appendChild(btn);
+            });
+            document.getElementById('choicePanel').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function selectChoice(choiceObj) {
+            if (choiceObj.j !== undefined) affJinna += choiceObj.j;
+            if (choiceObj.r !== undefined) affRiko += choiceObj.r;
+            if (choiceObj.k !== undefined) affkonoha += choiceObj.k;
+            updateDevFlagsDisplay();
+            
+            // 1. 現在のインデックスをプレイヤーの選択文に置き換える
+            scenario[currentIndex] = { name: "{playerName}", text: choiceObj.text };
+            
+            // 2. 直後のインデックスにリアクションセリフを挿入する
+            if (choiceObj.reactions) {
+                scenario.splice(currentIndex + 1, 0, ...choiceObj.reactions);
+            }
+            
+            closePanels();
+            processScenario();
+        }
+
+        function playTransitionScene(url, waitTime = 0) {
+            isWaitingForInput = true;
+            const mult = getTransitionMultiplier();
+            document.getElementById('blackTransition').classList.add('active');
+            setTimeout(() => {
+                document.getElementById('novelContainer').style.backgroundImage = `url('${url}')`;
+                setTimeout(() => {
+                    document.getElementById('blackTransition').classList.remove('active');
+                    currentIndex++;
+                    isWaitingForInput = false;
+                    processScenario(true);
+                }, 400 * mult);
+            }, 900 * mult);
+        }
+
+        function performBackgroundChange(url) {
+            isWaitingForInput = true;
+            const mult = getTransitionMultiplier();
+            document.getElementById('whiteTransition').classList.add('active');
+            setTimeout(() => {
+                document.getElementById('novelContainer').style.backgroundImage = `url('${url}')`;
+                setTimeout(() => {
+                    document.getElementById('whiteTransition').classList.remove('active');
+                    isWaitingForInput = false;
+                    currentIndex++;
+                    processScenario();
+                }, 3000 * mult);
+            }, 3000 * mult);
+        }
+
+        function openSlotMenu(mode) {
+            isWaitingForInput = true;
+            if (window.autoTimer) clearTimeout(window.autoTimer);
+            const list = document.getElementById('slotList');
+            list.innerHTML = "";
+            for (let i = 1; i <= 3; i++) {
+                const data = JSON.parse(localStorage.getItem(`sabasuku_slot_${i}`));
+                const btn = document.createElement('button');
+                btn.className = "menu-action-btn";
+                btn.innerHTML = data ? `Slot ${i}: ${data.slotName}` : `Slot ${i}: データなし`;
+                btn.onclick = () => mode === 'save' ? handleSave(i) : handleLoad(i);
+                list.appendChild(btn);
+            }
+            document.getElementById('slotPanel').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function handleSave(i) {
+            const name = prompt("データ名を入力してください", "しおり " + i);
+            if (!name) return;
+            const saveData = {
+                idx: currentIndex, aj: affJinna, ar: affRiko, ak: affkonoha, playerName: playerName,
+                slotName: name, date: new Date().toLocaleString(),
+                bg: document.getElementById('novelContainer').style.backgroundImage,
+                scenarioData: scenario 
+            };
+            localStorage.setItem(`sabasuku_slot_${i}`, JSON.stringify(saveData));
+            alert("セーブしました！");
+            openSlotMenu('save');
+        }
+
+        function handleLoad(i) {
+            const data = JSON.parse(localStorage.getItem(`sabasuku_slot_${i}`));
+            if (!data) return;
+            closePanels();
+            
+            isAutoMode = false;
+            document.getElementById('autoBtnTop').classList.remove('active');
+            document.getElementById('autoBtnTop').textContent = "オート OFF";
+            if (window.autoTimer) clearTimeout(window.autoTimer);
+            
+            currentIndex = data.idx;
+            affJinna = data.aj || 0;
+            affRiko = data.ar || 0;
+            affkonoha = data.ak || 0;
+            playerName = data.playerName;
+            scenario = data.scenarioData;
+            
+            document.getElementById('titleScreen').style.display = 'none';
+            document.getElementById('gameScreen').classList.add('active');
+            document.getElementById('novelContainer').style.backgroundImage = data.bg;
+            processScenario(true);
+            updateDevFlagsDisplay();
+        }
+
+        function returnToTitle() {
+            if (window.autoTimer) clearTimeout(window.autoTimer);
+            if (window.typeInterval) clearInterval(window.typeInterval);
+            closePanels();
+
+            isAutoMode = false;
+            document.getElementById('autoBtnTop').classList.remove('active');
+            document.getElementById('autoBtnTop').textContent = "オート OFF";
+            isWaitingForInput = false;
+            isTyping = false;
+
+            currentIndex = 0; affJinna = 0; affRiko = 0; affkonoha = 0;
+            scenario = [];
+
+            hideNextIndicator();
+            hideSprites();
+            document.getElementById('tutorialPointer').style.display = 'none';
+            document.getElementById('textBox').style.display = 'none';
+            document.getElementById('dialogueText').textContent = '';
+            document.getElementById('characterName').textContent = '';
+
+            document.getElementById('gameScreen').classList.remove('active');
+
+            const titleScreen = document.getElementById('titleScreen');
+            titleScreen.style.display = '';
+            // フェードインアニメーションを再生させるため一度リセットする
+            titleScreen.style.animation = 'none';
+            void titleScreen.offsetWidth;
+            titleScreen.style.animation = '';
+        }
+        
+        function confirmPlayerName() {
+            const val = document.getElementById('playerNameInput').value;
+            if (val.trim()) playerName = val;
+            closePanels();
+            currentIndex++;
+            processScenario();
+        }
+
+        // ===== 開発者モード関数 =====
+
+        function runDevCommand() {
+            const input = document.getElementById('devCommandInput');
+            const feedback = document.getElementById('devCommandFeedback');
+            const val = input.value.trim().toLowerCase();
+            if (val === DEV_COMMAND) {
+                closePanels();
+                const panel = document.getElementById('devPanel');
+                panel.classList.add('active');
+                renderChapterList();
+                updateDevFlagsDisplay();
+                updateDevAudioInfo();
+                feedback.textContent = "";
+            } else if (val.length > 0) {
+                feedback.textContent = "不明なコマンドです";
+            }
+            input.value = "";
+        }
+
+        function toggleDevPanel() {
+            const panel = document.getElementById('devPanel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                renderChapterList();
+                updateDevFlagsDisplay();
+                updateDevAudioInfo();
+            }
+        }
+
+        function renderChapterList() {
+            const list = document.getElementById('devChapterList');
+            list.innerHTML = "";
+            devChapterMarkers.forEach(m => {
+                const btn = document.createElement('button');
+                btn.className = "dev-chapter-btn";
+                btn.textContent = m.label;
+                btn.onclick = () => devJumpToIndex(m.idx);
+                list.appendChild(btn);
+            });
+        }
+
+        function devJumpToIndexFromInput() {
+            const val = parseInt(document.getElementById('devJumpIndex').value);
+            if (isNaN(val)) { alert('番号を入力してください'); return; }
+            devJumpToIndex(val);
+        }
+
+        function devJumpToIndex(idx) {
+            if (idx < 0 || idx >= initialScenario.length) {
+                alert('範囲外のインデックスです（0～' + (initialScenario.length - 1) + '）');
+                return;
+            }
+            if (window.autoTimer) clearTimeout(window.autoTimer);
+            if (window.typeInterval) clearInterval(window.typeInterval);
+            isAutoMode = false;
+            document.getElementById('autoBtnTop').classList.remove('active');
+            document.getElementById('autoBtnTop').textContent = "オート OFF";
+
+            // ジャンプ時はシナリオを初期状態から再構築します（分岐セリフの挿入はリセットされます）
+            scenario = JSON.parse(JSON.stringify(initialScenario));
+
+            // 直近の背景を逆算して設定
+            let bgUrl = SKY_BG;
+            for (let i = idx; i >= 0; i--) {
+                if (scenario[i] && (scenario[i].type === 'changeBackground' || scenario[i].type === 'transitionBackground')) {
+                    bgUrl = scenario[i].url;
+                    break;
+                }
+            }
+
+            document.getElementById('titleScreen').style.display = 'none';
+            document.getElementById('gameScreen').classList.add('active');
+            document.getElementById('novelContainer').style.backgroundImage = `url('${bgUrl}')`;
+
+            currentIndex = idx;
+            isWaitingForInput = false;
+            isTyping = false;
+
+            if (bgm.paused) {
+                bgm.play().catch(e => console.log("再生失敗:", e));
+            }
+
+            processScenario(true);
+            updateDevPositionInfo();
+            updateDevAudioInfo();
+        }
+
+        function updateDevPositionInfo() {
+            const el = document.getElementById('devPosInfo');
+            if (el) el.textContent = `(現在: ${currentIndex} / ${Math.max(scenario.length - 1, 0)})`;
+            const big = document.getElementById('devIndexBig');
+            const bigMax = document.getElementById('devIndexMaxBig');
+            if (big) big.textContent = currentIndex;
+            if (bigMax) bigMax.textContent = Math.max(scenario.length - 1, 0);
+        }
+
+        function updateDevFlagsDisplay() {
+            const j = document.getElementById('devAffJinna');
+            const r = document.getElementById('devAffRiko');
+            const k = document.getElementById('devAffKonoha');
+            if (j) j.value = affJinna;
+            if (r) r.value = affRiko;
+            if (k) k.value = affkonoha;
+            updateDevPositionInfo();
+        }
+
+        function devSetFlag(type, val) {
+            const num = parseInt(val);
+            if (isNaN(num)) return;
+            if (type === 'j') affJinna = num;
+            else if (type === 'r') affRiko = num;
+            else if (type === 'k') affkonoha = num;
+        }
+
+        function devAdjustFlag(type, delta) {
+            if (type === 'j') affJinna += delta;
+            else if (type === 'r') affRiko += delta;
+            else if (type === 'k') affkonoha += delta;
+            updateDevFlagsDisplay();
+        }
+
+        function devQuickSave() {
+            const saveData = {
+                idx: currentIndex, aj: affJinna, ar: affRiko, ak: affkonoha, playerName: playerName,
+                bg: document.getElementById('novelContainer').style.backgroundImage,
+                scenarioData: scenario, date: new Date().toLocaleString()
+            };
+            localStorage.setItem('sabasuku_dev_quicksave', JSON.stringify(saveData));
+            document.getElementById('devQuickSaveInfo').textContent = "保存済み: " + saveData.date;
+        }
+
+        function devQuickLoad() {
+            const data = JSON.parse(localStorage.getItem('sabasuku_dev_quicksave') || 'null');
+            if (!data) { alert('クイックセーブデータがありません'); return; }
+            if (window.autoTimer) clearTimeout(window.autoTimer);
+            if (window.typeInterval) clearInterval(window.typeInterval);
+            isAutoMode = false;
+            document.getElementById('autoBtnTop').classList.remove('active');
+            document.getElementById('autoBtnTop').textContent = "オート OFF";
+
+            currentIndex = data.idx;
+            affJinna = data.aj || 0;
+            affRiko = data.ar || 0;
+            affkonoha = data.ak || 0;
+            playerName = data.playerName;
+            scenario = data.scenarioData;
+
+            document.getElementById('titleScreen').style.display = 'none';
+            document.getElementById('gameScreen').classList.add('active');
+            document.getElementById('novelContainer').style.backgroundImage = data.bg;
+            isWaitingForInput = false;
+            isTyping = false;
+            processScenario(true);
+            updateDevFlagsDisplay();
+            document.getElementById('devQuickSaveInfo').textContent = "読み込み済み: " + data.date;
+        }
+
+        function setDevSpeed(mode) {
+            devSpeedMode = mode;
+            document.querySelectorAll('.dev-speed-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.mode === mode);
+            });
+        }
+
+        function getTypeInterval() {
+            switch (devSpeedMode) {
+                case 'instant': return 0;
+                case 'fast': return 8;
+                case 'slow': return 100;
+                default: return textSpeedInterval;
+            }
+        }
+
+        function getTransitionMultiplier() {
+            switch (devSpeedMode) {
+                case 'instant': return 0.05;
+                case 'fast': return 0.3;
+                case 'slow': return 2;
+                default: return 1;
+            }
+        }
+
+        function updateDevAudioInfo() {
+            const el = document.getElementById('devBgmName');
+            if (el) el.textContent = bgm.currentSrc ? bgm.currentSrc.split('/').pop() : (bgm.src ? bgm.src.split('/').pop() : "再生なし");
+        }
+
+        function toggleBGMMute() {
+            bgm.muted = !bgm.muted;
+            const btn = document.getElementById('devMuteBtn');
+            btn.textContent = bgm.muted ? "ミュート解除" : "ミュート";
+            btn.classList.toggle('active', bgm.muted);
+        }
+
+        function playSEPreview() {
+            const path = document.getElementById('sePreviewPath').value.trim();
+            if (!path) { alert('ファイル名を入力してください'); return; }
+            if (sePreviewAudio) { sePreviewAudio.pause(); }
+            sePreviewAudio = new Audio(path);
+            sePreviewAudio.play().catch(e => alert('再生できませんでした: ' + e.message));
+        }
+
+        function stopSEPreview() {
+            if (sePreviewAudio) { sePreviewAudio.pause(); sePreviewAudio = null; }
+        }
+    </script>
+</body>
+</html>

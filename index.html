@@ -338,6 +338,44 @@
             background: #fff0f5; color: #ff1493; font-weight: bold; cursor: pointer; font-family: inherit;
         }
         .dev-small-text { font-size: 0.78rem; color: #888; margin-top: 4px; }
+
+        /* ===== レスポンシブ対応（スマホ・タブレット） ===== */
+        @media (max-width: 768px) {
+            .title-image { max-width: 380px; width: 85%; margin-bottom: 3rem; }
+            .title-btn { width: 240px; font-size: 1.2rem; padding: 0.8rem 2rem; }
+            .character-name { font-size: 1.3rem; }
+            .dialogue-text { font-size: 1.05rem; line-height: 1.7; min-height: 4em; }
+            .text-box { padding: 1.2rem 1.5rem; }
+            .choice-btn { font-size: 1rem; padding: 1rem; }
+            .panel-base { min-width: auto; width: 88vw; padding: 1.8rem; }
+            #menuBtnTop { left: 10px; top: 10px; padding: 0.5rem 1rem; font-size: 0.85rem; }
+            #autoBtnTop { left: 110px; top: 10px; padding: 0.5rem 1rem; font-size: 0.85rem; }
+            .dev-panel { width: 100vw; }
+            .next-indicator { width: 32px; height: 32px; font-size: 0.85rem; bottom: 12px; right: 16px; }
+            .character-sprite { height: 100vh !important; bottom: 0 !important; }
+            .dev-toggle-btn { bottom: 10px; right: 10px; padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+        }
+
+        @media (max-width: 480px) {
+            .title-image { max-width: 260px; margin-bottom: 2rem; }
+            .title-btn { width: 200px; font-size: 1.05rem; padding: 0.7rem 1.5rem; }
+            .character-name { font-size: 1.1rem; }
+            .dialogue-text { font-size: 0.92rem; line-height: 1.6; min-height: 3.5em; }
+            .text-box { padding: 1rem 1.2rem; }
+            .panel-base { padding: 1.4rem; }
+            .panel-base h2 { font-size: 1.1rem; }
+            .menu-action-btn { padding: 0.7rem; font-size: 0.9rem; }
+            #menuBtnTop, #autoBtnTop { font-size: 0.7rem; padding: 0.4rem 0.7rem; }
+            #autoBtnTop { left: 95px; }
+            .next-indicator { width: 28px; height: 28px; font-size: 0.75rem; }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            .title-image { max-width: 260px; margin-bottom: 1rem; }
+            .title-btn { padding: 0.6rem 2rem; margin-bottom: 8px; font-size: 1.1rem; }
+            .text-box { padding: 0.8rem 1.5rem; }
+            .dialogue-text { min-height: 3em; font-size: 0.95rem; }
+        }
     </style>
 </head>
 <body>
@@ -566,7 +604,7 @@
             { name: "{playerName}", text: "{playerName}です。よろしくお願いします" },//34
             { name: "スグル", text: "ああ、よろしく。でも、アキラには巻き込まれるなよ。この前もいきなりカラオケに連れて行かれて、七時間も付き合わされたからな" },//35
             { name: "{playerName}", text: "えっ？それはちょっと…" },//36
-            { name: "アキラ", text: "いいじゃん！スグルはいつもこうやって俺の悪口言うんだよ！でも、結局付き合ってくれるんだから優しいんだよな!" },//37
+            { name: "アキラ", text: "スグルはいつもそうやって俺の悪口言うんだよ！でも、結局付き合ってくれるんだから優しいんだよな!" },//37
             { name: "スグル", text: "…ただ、断るのが面倒くさいだけだ" },//38
             { name: "アキラ", text: "またまたぁ(ﾆﾔﾆﾔ）" },//39
             { name: "スグル", text: "ちっ…" },//40
@@ -641,7 +679,7 @@
             { name: "先生", text: "は～い。みなさん、座ってくださーい。それでは、これからホームルームを始めます。まずは自己紹介からしましょうか" },//86
             { name: "{playerName}", text: "（自己紹介が始まり、順番がアキラに回ってきた。アキラは自信満々に立ち上がると、にっこり笑った。）" },//87
             { name: "アキラ", text: "みんな、初めまして！アキラって言います！趣味は友達と遊ぶことと、新しいことに挑戦すること！これからよろしく！あと、こっちは{playerName}くんとスグル！俺の友達です！" },//88
-            { name: "スグル", text: "くそ…やってくれたな…" },//89
+            { name: "スグル", text: "またやってくれたな…" },//89
             { name: "アキラ", text: "あはは！まぁまぁ！" },//90
             { name: "先生", text: "アキラくん、とても元気ですね。では次、{playerName}くんお願いします" },//91
             { name: "{playerName}", text: "えっと…{playerName}です…趣味は…特にないです…よろしくお願いします" },//92
@@ -662,9 +700,9 @@
             { type: "transitionBackground", url: SCHOOL_INSIDE, wait: 0 },//107
             { name: "アキラ", text: "よしっ！それじゃ、校門前へレッツゴー！仁奈たち、誘ってくるから先行ってて！じゃ、またあとで！" },//108
             { name: "スグル", text: "おい、アキラ！俺はまだ行くとは…ちっ、もう行きやがった" },//109
-            { name: "{playerName}", text: "アキラくんはいつもこんなにエネルギッシュなの？" },//110
+            { name: "{playerName}", text: "アキラはいつもこんなにエネルギッシュなの？" },//110
             { name: "スグル", text: "ああ、中学の時からずっとこんな調子だ。こっちが疲れるくらいにな" },//111
-            { name: "{playerName}", text: "でも、スグルくんも楽しそうだよね" },//112
+            { name: "{playerName}", text: "でも、スグルも楽しそうだよね" },//112
             { name: "スグル", text: "…勘違いだ" },//113
             { type: "transitionBackground", url: SCHOOL_BEFORE, wait: 0 },//114
             { name: "大井 仁奈", text: "まあ！{playerName}くんも来るんだね！とっても嬉しい！" },//115
@@ -710,7 +748,7 @@
                         ]
                     }, 
                     { 
-                        text: "じゃあ、ダブルチーズバーガーセットで", j: 0, r: 0,
+                        text: "じゃあ、ダブルチーズバーガーセットで", j: 2, r: 2,
                     }, 
                     { 
                         text: "じゃあ俺も、えびフィレオのセットで", j: 0, r: 1,
@@ -722,10 +760,10 @@
             { type: "transitionBackground", url: MAC_TENNAI, wait: 0 },//125
             { name: "大井 仁奈", text: "{playerName}くん、アキラくんとはどうやって知り合ったの？" },//126
             { name: "{playerName}", text: "えっと…クラス発表の掲示板の前で話しかけられて。同じクラスだってわかって、それで仲良くなりました" },//127
-            { name: "大井 仁奈", text: "あらま。アキラくんらしい出会い方ね。彼、人見知りしないから、すぐに友達を作るのよ" },//128
+            { name: "大井 仁奈", text: "ああ、なるほど。アキラくんらしい出会い方ね。彼、人見知りしないから、すぐに友達を作るのよ" },//128
             { name: "{playerName}", text: "仁奈はどうやって知り合ったんですか？" },//129
             { name: "大井 仁奈", text: "ん～？中学の時から知り合いなの。同じ塾に通ってて、そこで仲良くなったのよ。莉子ともそこで知り合ったんだから" },//130
-            { name: "{playerName}", text: "昔っからあんな感じなんですね、アキラくんって" },//131
+            { name: "{playerName}", text: "昔っからあんな感じなんですね、アキラって" },//131
             { name: "小峰 莉子", text: "そうそう！変わらないだよね、昔っから！" },//132
             { name: "アキラ", text: "おっまた～！注文完了！" },//133
             { name: "アキラ", text: "さあさあ、食べよ―ぜ！高校生活最初の食事会だ！" },//134
@@ -783,7 +821,7 @@
                     },
                 ]
             }, //144
-            { name: "{playerName}", text: "（談笑しながら食事をし、みんなと別れた後、僕とアキラは家路についた）" },//145
+            { name: "{playerName}", text: "（みんなと別れ、僕とアキラは家路についた）" },//145
             { type: "transitionBackground", url: kaerimiti_yuugata, wait: 0 },//146
             { name: "アキラ", text: "今日は楽しかったな！" },//147
             { name: "アキラ", text: "じゃ、俺こっちだから！{playerName}くん、また明日な！" },//148
@@ -791,9 +829,9 @@
             { name: "{playerName}", text: "…ん？なに？" },//150
             { name: "アキラ", text: "お互い、呼び捨てにしようよ！" },//151
             { name: "{playerName}", text: "え？…いいの…？" },//152
-            { name: "アキラ", text: "もちろん！" },//153
-            { name: "アキラ", text: "じゃ、{playerName}！また明日！" },//154
-            { name: "{playerName}", text: "うん、また明日。アキラ" },//155
+            { name: "アキラ", text: "もちろん" },//153
+            { name: "アキラ", text: "やった！{playerName}！また明日！" },//154
+            { name: "{playerName}", text: "うん、また明日" },//155
             { type: "transitionBackground", url: SCHOOL_INSIDE, wait: 0 },//156
             { name: "{playerName}", text: "翌日………" },//157
             { name: "アキラ", text: "おはよう、{playerName}！昨日は楽しかったな！" },//158
@@ -1001,6 +1039,8 @@
         let playerName = "雲雀 望斗";
         let isTyping = false;
         let isWaitingForInput = false;
+        let pendingQueue = [];
+        let currentDisplayText = "";
 
         let isAutoMode = false;
         let autoAdvanceDelay = 3000;
@@ -1089,8 +1129,13 @@
             if (isAutoMode && !isWaitingForInput && !isTyping) {
                 window.autoTimer = setTimeout(() => {
                     if (isAutoMode && !isWaitingForInput && !isTyping) {
-                        currentIndex++;
-                        processScenario();
+                        if (pendingQueue.length > 0) {
+                            const next = pendingQueue.shift();
+                            displayQueuedLine(next);
+                        } else {
+                            currentIndex++;
+                            processScenario();
+                        }
                     }
                 }, autoAdvanceDelay);
             }
@@ -1107,6 +1152,7 @@
             // 白で隠れている間に画面の中身を切り替える
             bgm.play().catch(e => console.log("再生失敗:", e));
             currentIndex = 0; affJinna = 0; affRiko = 0; affkonoha = 0;
+            pendingQueue = [];
             scenario = JSON.parse(JSON.stringify(initialScenario));
             document.getElementById('titleScreen').style.display = 'none';
             document.getElementById('gameScreen').classList.add('active');
@@ -1129,8 +1175,23 @@
             if (isTyping) { skipTypewriter(); return; }
             if (isWaitingForInput) return;
             if (window.autoTimer) clearTimeout(window.autoTimer);
+
+            if (pendingQueue.length > 0) {
+                const next = pendingQueue.shift();
+                displayQueuedLine(next);
+                return;
+            }
+
             currentIndex++;
             processScenario();
+        }
+
+        function displayQueuedLine(lineObj) {
+            const nameStr = lineObj.name ? lineObj.name.replace("{playerName}", playerName) : "";
+            const textStr = lineObj.text ? lineObj.text.replace("{playerName}", playerName) : "";
+            document.getElementById('characterName').textContent = nameStr;
+            document.getElementById('textBox').style.display = 'block';
+            startTypewriter(textStr);
         }
 
         function setSprite(imgElement, src, posClass, height = '95vh', bottom = '50px') {
@@ -1182,13 +1243,13 @@
                 hideSprites();
                 setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
                 setSprite(s2, SUGURU_IMAGE, 'right-pos', '180vh', '-70vh');
-            } else if (currentIndex >= 50 && currentIndex <= 69) {
+            } else if (currentIndex >= 50 && currentIndex <= 68) {
                 hideSprites();
                 setSprite(s1, JINNA_IMAGE, 'pos-4-1', '180vh', '-70vh');
                 setSprite(s2, RIKO_IMAGE, 'pos-4-2', '180vh', '-70vh');
                 setSprite(s3, AKIRA_IMAGE, 'pos-4-3', '180vh', '-70vh');
                 setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '180vh', '-70vh');
-            } else if (currentIndex >= 71 && currentIndex <= 72) {
+            } else if (currentIndex >= 69 && currentIndex <= 72) {
                 hideSprites();
                 setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
                 setSprite(s2, SUGURU_IMAGE, 'right-pos', '180vh', '-70vh');
@@ -1199,57 +1260,52 @@
             } else if (currentIndex === 90) {
                 hideSprites();
                 setSprite(s1, AKIRA_IMAGE, 'center-pos', '180vh', '-70vh');
-            } else if (currentIndex >= 91 && currentIndex <= 92) {
+            } else if (currentIndex === 91) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
                 setSprite(s1, SUGURU_IMAGE, 'center-pos', '180vh', '-70vh');
+            } else if (currentIndex === 92 || currentIndex === 93) {
+                hideSprites();
+                setSprite(s1, AKIRA_IMAGE, 'center-pos', '180vh', '-70vh');
             } else if (currentIndex === 95) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'center-pos', '180vh', '-70vh');
-            } else if (currentIndex === 97) {
-                hideSprites();
                 setSprite(s1, SUGURU_IMAGE, 'center-pos', '180vh', '-70vh');
-            } else if (currentIndex >= 98 && currentIndex <= 100) {
+            } else if (currentIndex >= 96 && currentIndex <= 98) {
                 hideSprites();
                 setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
                 setSprite(s2, SUGURU_IMAGE, 'right-pos', '180vh', '-70vh');
-            } else if (currentIndex >= 102 && currentIndex <= 105) {
+            } else if (currentIndex >= 100 && currentIndex <= 103) {
                 hideSprites();
                 setSprite(s1, AKIRA_IMAGE, 'center-pos', '180vh', '-70vh');
-            } else if (currentIndex >= 105 && currentIndex <= 109) {
+            } else if (currentIndex >= 104 && currentIndex <= 106) {
                 hideSprites();
                 setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
                 setSprite(s2, SUGURU_IMAGE, 'right-pos', '180vh', '-70vh');
-            } else if (currentIndex >= 110 && currentIndex <= 113) {
+            } else if (currentIndex >= 109 && currentIndex <= 113) {
                 hideSprites();
                 setSprite(s1, SUGURU_IMAGE, 'center-pos', '180vh', '-70vh');
-            } else if (currentIndex >= 116 && currentIndex <= 127) {
+            } else if (currentIndex >= 115 && currentIndex <= 123) {
                 hideSprites();
                 setSprite(s1, JINNA_IMAGE, 'pos-4-1', '180vh', '-70vh');
                 setSprite(s2, RIKO_IMAGE, 'pos-4-2', '180vh', '-70vh');
                 setSprite(s3, AKIRA_IMAGE, 'pos-4-3', '180vh', '-70vh');
                 setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '180vh', '-70vh');
-            } else if (currentIndex >= 128 && currentIndex <= 136) {
+            } else if (currentIndex === 124 ) {
                 hideSprites();
                 setSprite(s1, JINNA_IMAGE, 'pos-4-1', '180vh', '-70vh');
                 setSprite(s2, RIKO_IMAGE, 'pos-4-2', '180vh', '-70vh');
                 setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '180vh', '-70vh');
-            }  else if (currentIndex >= 137 && currentIndex <= 149) {
+            }  else if (currentIndex >= 125 && currentIndex <= 144) {
                 hideSprites();
                 setSprite(s1, JINNA_IMAGE, 'pos-4-1', '180vh', '-70vh');
                 setSprite(s2, RIKO_IMAGE, 'pos-4-2', '180vh', '-70vh');
                 setSprite(s3, AKIRA_IMAGE, 'pos-4-3', '180vh', '-70vh');
                 setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '180vh', '-70vh');
-            }else if (currentIndex >= 152 && currentIndex <=160) {
+            }else if (currentIndex >= 170) {
+                // 成瀬心葉のシーン
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'center-pos', '180vh', '-70vh');
-            }else if (currentIndex >= 163 && currentIndex <= 170) {
-                hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'left-pos', '180vh', '-70vh');
-                setSprite(s2, SUGURU_IMAGE, 'right-pos', '180vh', '-70vh');
-            }else if (currentIndex >= 173) {
-                hideSprites();
+                if (data.name === "成瀬 心葉") {
                     setSprite(s1, konoha_image, 'center-pos', '180vh', '-70vh');
+                }
             } else {
                 hideSprites();
             }
@@ -1258,6 +1314,7 @@
                 document.getElementById('textBox').style.display = 'block';
                 if (skipType) {
                     document.getElementById('dialogueText').textContent = textStr;
+                    currentDisplayText = textStr;
                     isTyping = false; 
                     showNextIndicator();
                     checkAutoAdvance();
@@ -1280,6 +1337,7 @@
 
         function startTypewriter(text) {
             isTyping = true;
+            currentDisplayText = text;
             hideNextIndicator();
             const interval = getTypeInterval();
             const el = document.getElementById('dialogueText');
@@ -1309,8 +1367,7 @@
 
         function skipTypewriter() {
             clearInterval(window.typeInterval);
-            const text = scenario[currentIndex].text ? scenario[currentIndex].text.replace("{playerName}", playerName) : "";
-            document.getElementById('dialogueText').textContent = text;
+            document.getElementById('dialogueText').textContent = currentDisplayText;
             isTyping = false;
             showNextIndicator();
             checkAutoAdvance();
@@ -1356,17 +1413,17 @@
             if (choiceObj.r !== undefined) affRiko += choiceObj.r;
             if (choiceObj.k !== undefined) affkonoha += choiceObj.k;
             updateDevFlagsDisplay();
-            
-            // 1. 現在のインデックスをプレイヤーの選択文に置き換える
-            scenario[currentIndex] = { name: "{playerName}", text: choiceObj.text };
-            
-            // 2. 直後のインデックスにリアクションセリフを挿入する
-            if (choiceObj.reactions) {
-                scenario.splice(currentIndex + 1, 0, ...choiceObj.reactions);
-            }
-            
+
             closePanels();
-            processScenario();
+
+            // 選択した台詞とリアクションをキューに積む（シナリオ配列は変更しない＝インデックスがズレない）
+            pendingQueue = [{ name: "{playerName}", text: choiceObj.text }];
+            if (choiceObj.reactions) {
+                pendingQueue.push(...choiceObj.reactions);
+            }
+
+            const first = pendingQueue.shift();
+            displayQueuedLine(first);
         }
 
         function playTransitionScene(url, waitTime = 0) {
@@ -1434,6 +1491,7 @@
             const data = JSON.parse(localStorage.getItem(`sabasuku_slot_${i}`));
             if (!data) return;
             closePanels();
+            pendingQueue = [];
             
             isAutoMode = false;
             document.getElementById('autoBtnTop').classList.remove('active');
@@ -1467,6 +1525,7 @@
 
             currentIndex = 0; affJinna = 0; affRiko = 0; affkonoha = 0;
             scenario = [];
+            pendingQueue = [];
 
             hideNextIndicator();
             hideSprites();
@@ -1554,6 +1613,7 @@
 
             // ジャンプ時はシナリオを初期状態から再構築します（分岐セリフの挿入はリセットされます）
             scenario = JSON.parse(JSON.stringify(initialScenario));
+            pendingQueue = [];
 
             // 直近の背景を逆算して設定
             let bgUrl = SKY_BG;
@@ -1628,6 +1688,7 @@
         function devQuickLoad() {
             const data = JSON.parse(localStorage.getItem('sabasuku_dev_quicksave') || 'null');
             if (!data) { alert('クイックセーブデータがありません'); return; }
+            pendingQueue = [];
             if (window.autoTimer) clearTimeout(window.autoTimer);
             if (window.typeInterval) clearInterval(window.typeInterval);
             isAutoMode = false;

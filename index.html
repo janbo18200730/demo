@@ -623,7 +623,13 @@
 
         function playTitleCall() {
             if (titleCallAudio) titleCallAudio.pause();
-            const voice = titleCallVoices[Math.floor(Math.random() * titleCallVoices.length)];
+            let voice;
+            if (Math.random() < 0.01) {
+                voice = "janbo.mp3";
+            } else {
+                const normalVoices = titleCallVoices.filter(v => v !== "janbo.mp3");
+                voice = normalVoices[Math.floor(Math.random() * normalVoices.length)];
+            }
             titleCallAudio = new Audio(voice);
             return titleCallAudio.play();
         }

@@ -506,24 +506,27 @@
                 margin-bottom: 8px !important;
             }
 
-            /* ---- テキストボックス：高さを固定し、文字量で伸縮させない ---- */
+            /* ---- テキストボックス：高さを固定し、文字量で伸縮させない ----
+               ・画面を圧迫しすぎないよう控えめな高さにする
+               ・名前プレート分のスペースを padding-top で確保し、セリフと被らないようにする
+            */
             .text-box {
-                height: 46vh;
-                min-height: 46vh;
-                max-height: 46vh;
-                padding: 0.6rem 1.3rem 0.7rem;
+                height: 32vh;
+                min-height: 32vh;
+                max-height: 32vh;
+                padding: 1.5rem 1.2rem 0.5rem;
             }
 
             .dialogue-text {
-                font-size: clamp(0.72rem, 2.7vh, 1rem);
-                line-height: 1.5;
+                font-size: clamp(0.68rem, 2.3vh, 0.88rem);
+                line-height: 1.4;
             }
 
             .name-plate {
-                font-size: clamp(0.7rem, 2.2vh, 0.9rem);
-                padding: 0.28rem 0.9rem;
-                top: -15px;
-                left: 14px;
+                font-size: 0.72rem;
+                padding: 0.22rem 0.8rem;
+                top: -16px;
+                left: 12px;
             }
 
             /* ---- 立ち絵：横画面の高さに収まるよう調整 ---- */

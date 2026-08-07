@@ -2,14 +2,46 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
     <title>さばすく‼</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700&display=swap');
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'M PLUS Rounded 1c', sans-serif; background: #000; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { height: 100%; overflow: hidden; touch-action: manipulation; }
+        html, body { height: 100vh; height: 100dvh; }
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background: #000;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; position: relative;
+            overscroll-behavior: none;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* ===== 16:9固定ゲームステージ（自動スケーリング・レターボックス方式） =====
+           すべてのUIをこの1920x1080の固定デザインキャンバスの中に描画し、
+           JS側でウィンドウサイズに応じて transform:scale するだけで、
+           PCデザインを完全に維持したまま、あらゆる画面サイズ・比率に自動対応する。
+           position:fixed の子要素は「transformを持つ祖先」を包含ブロックとするCSS仕様を利用し、
+           既存の position:fixed / vw / % ベースのレイアウトをそのまま活かしている。
+        */
+        #gameStage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 1920px;
+            height: 1080px;
+            background: #000;
+            transform-origin: center center;
+            transform: translate(-50%, -50%) scale(1);
+            will-change: transform;
+        }
         
         #mainBg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://min-chi.material.jp/mc/materials/background-c/school_in_spring/_school_in_spring_1.jpg') center/cover no-repeat; z-index: 0; }
         #mainBg::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.3); }
@@ -256,7 +288,7 @@
         }
         
         /* 立ち絵のスタイル */
-        .character-sprite { position: absolute; bottom: 50px; height: 95vh; z-index: 5; opacity: 0; transition: opacity 0.4s, left 0.4s, transform 0.4s; pointer-events: none; }
+        .character-sprite { position: absolute; bottom: 50px; height: 95%; z-index: 5; opacity: 0; transition: opacity 0.4s, left 0.4s, transform 0.4s; pointer-events: none; image-rendering: -webkit-optimize-contrast; backface-visibility: hidden; }
         .character-sprite.active { opacity: 1; }
         
         .pos-4-1 { left: 12%; transform: translateX(-50%); }
@@ -413,10 +445,49 @@
             .panel-base { min-width: auto; width: 88vw; padding: 1.8rem; }
             #menuBtnTop { left: 10px; top: 10px; padding: 0.5rem 1rem; font-size: 0.85rem; }
             #autoBtnTop { left: 110px; top: 10px; padding: 0.5rem 1rem; font-size: 0.85rem; }
-            .dev-panel { width: 100vw; }
+            .dev-panel { width: 100%; }
             .next-indicator { width: 32px; height: 32px; font-size: 0.85rem; bottom: 12px; right: 16px; }
-            .character-sprite { height: 100vh !important; bottom: 0 !important; }
+            .character-sprite { height: 100% !important; bottom: 0 !important; }
             .dev-toggle-btn { bottom: 10px; right: 10px; padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+        }
+
+        /* タブレット(769px〜1024px)向けの微調整 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .title-image { max-width: 460px; }
+            .title-btn { width: 260px; }
+        }
+
+        /* セーフエリア対応（ノッチ・Dynamic Island・ホームインジケーター） */
+        #menuBtnTop { margin-top: env(safe-area-inset-top, 0px); margin-left: env(safe-area-inset-left, 0px); }
+        #autoBtnTop { margin-top: env(safe-area-inset-top, 0px); }
+        .text-box { padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px)); }
+        .dev-panel { padding-right: calc(1.2rem + env(safe-area-inset-right, 0px)); }
+
+        /* ===== 横画面推奨オーバーレイ ===== */
+        #rotateOverlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 99998;
+            background: rgba(0,0,0,0.92);
+            color: #fff;
+            flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 2rem;
+            font-family: 'M PLUS Rounded 1c', 'Meiryo', sans-serif;
+        }
+        #rotateOverlay.show { display: flex; }
+        #rotateOverlay .rotate-icon { font-size: 3.5rem; margin-bottom: 1.2rem; animation: rotateHint 1.6s ease-in-out infinite; }
+        #rotateOverlay p { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em; }
+        @keyframes rotateHint {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-90deg); }
+        }
+
+        /* パフォーマンス最適化：低スペック端末での描画負荷軽減 */
+        @media (max-width: 768px), (pointer: coarse) {
+            .tap-ripple, .tap-heart-wrap { will-change: opacity, transform; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .title-btn::before, .menu-action-btn::before, .next-indicator,
+            .tap-ripple, .tap-heart-wrap, #rotateOverlay .rotate-icon { animation: none !important; transition: none !important; }
         }
 
         @media (max-width: 480px) {
@@ -442,6 +513,8 @@
     </style>
 </head>
 <body>
+    <audio id="bgmAudio" src="Mauve.mp3" loop></audio>
+    <div id="gameStage">
     <div id="startOverlay" style="position:fixed; inset:0; background:#fff; z-index:99999; display:flex; align-items:center; justify-content:center; cursor:default;">
         <div style="background:linear-gradient(135deg,#fff0f5,#ffe4e9); color:#ff1493; padding:2rem 2.4rem; border-radius:30px; font-family:'M PLUS Rounded 1c','Meiryo',sans-serif; font-weight:700; font-size:1.15rem; box-shadow:0 8px 25px rgba(255,105,180,0.5); border:3px solid #ffb3d9; text-align:center;">
             <div style="margin-bottom:1.4rem;">音が出ます。<br>ご注意ください。</div>
@@ -451,7 +524,6 @@
             </div>
         </div>
     </div>
-    <audio id="bgmAudio" src="Mauve.mp3" loop></audio>
     <div id="mainBg"></div>
     <div class="white-transition" id="whiteTransition"></div>
     <div class="black-transition" id="blackTransition"></div>
@@ -612,24 +684,35 @@
             </div>
         </div>
     </div>
+    </div><!-- /#gameStage -->
+
+    <div id="rotateOverlay">
+        <div class="rotate-icon">📱</div>
+        <p>この端末は横画面でのプレイを推奨しています。<br>画面を横向きにしてください</p>
+    </div>
 
     <script>
         const bgm = document.getElementById('bgmAudio');
         bgm.volume = 0.10;
 
         // ===== タイトルコール機能 =====
-        const titleCallVoices = ["さばめんスクール さっぱり.mp3", "さばすくタイトルコール cv力一.mp3", "鯖メンスクール！＠さわやか.mp3", "さばめんスクール 元気め.mp3", "さばすくっ.mp3", "鯖メンスクール＠ネッチョリ.mp3", "鯖メンスクール_高め.mp3", "鯖メンスクール_低め.mp3", "janbo.mp3"];
+        const titleCallVoices = ["さばめんスクール さっぱり.mp3", "さばすくタイトルコール cv力一.mp3", "鯖メンスクール！＠さわやか.mp3", "さばめんスクール 元気め.mp3", "さばすくっ.mp3", "鯖メンスクール＠ネッチョリ.mp3", "鯖メンスクール_高め.mp3", "鯖メンスクール_低め.mp3", "あらず２.mp3", "あらず３.mp3"];
+        const RARE_TITLE_CALL_VOICE = "janbo.mp3";
+        const RARE_TITLE_CALL_CHANCE = 0.01; // 1%
+        const ARAZU1_VOICE = "あらず１.mp3";
+        const ARAZU1_CHANCE = 0.005; // 0.5%
         let titleCallAudio = null;
+
+        function pickTitleCallVoice() {
+            const r = Math.random();
+            if (r < RARE_TITLE_CALL_CHANCE) return RARE_TITLE_CALL_VOICE;
+            if (r < RARE_TITLE_CALL_CHANCE + ARAZU1_CHANCE) return ARAZU1_VOICE;
+            return titleCallVoices[Math.floor(Math.random() * titleCallVoices.length)];
+        }
 
         function playTitleCall() {
             if (titleCallAudio) titleCallAudio.pause();
-            let voice;
-            if (Math.random() < 0.01) {
-                voice = "janbo.mp3";
-            } else {
-                const normalVoices = titleCallVoices.filter(v => v !== "janbo.mp3");
-                voice = normalVoices[Math.floor(Math.random() * normalVoices.length)];
-            }
+            const voice = pickTitleCallVoice();
             titleCallAudio = new Audio(voice);
             return titleCallAudio.play();
         }
@@ -656,10 +739,66 @@
                 noBtn.addEventListener('click', () => {
                     window.close();
                     // ブラウザによってはスクリプトからタブを閉じられない場合があるため、その場合の案内を表示
-                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:\'M PLUS Rounded 1c\',sans-serif;color:#ff1493;text-align:center;padding:2rem;font-size:1.1rem;">このタブを閉じてください</div>';
+                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;height:100dvh;font-family:\'M PLUS Rounded 1c\',sans-serif;color:#ff1493;text-align:center;padding:2rem;font-size:1.1rem;">このタブを閉じてください</div>';
                 });
             }
+
+            // 立ち絵を事前に読み込んでおく（スマホでの回線遅延によるちらつき対策）
+            preloadSprites();
         });
+
+        // ===== レスポンシブ：16:9固定ステージの自動スケーリング =====
+        const STAGE_WIDTH = 1920;
+        const STAGE_HEIGHT = 1080;
+        const gameStageEl = document.getElementById('gameStage');
+        const rotateOverlayEl = document.getElementById('rotateOverlay');
+
+        function getViewportSize() {
+            // visualViewportが使える場合はそちらを優先する（アドレスバーの表示/非表示に追従できる）
+            if (window.visualViewport) {
+                return { w: window.visualViewport.width, h: window.visualViewport.height };
+            }
+            return { w: window.innerWidth, h: window.innerHeight };
+        }
+
+        function updateStageScale() {
+            if (!gameStageEl) return;
+            const { w, h } = getViewportSize();
+            const scale = Math.min(w / STAGE_WIDTH, h / STAGE_HEIGHT);
+            gameStageEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+            updateRotateOverlay(w, h);
+
+            // iOS Safari等でアドレスバーの表示/非表示によりページ全体がスクロールしてしまうのを防ぐ
+            window.scrollTo(0, 0);
+        }
+
+        // モバイル・タブレットのポートレート（縦持ち）時のみ、横画面を推奨する
+        function updateRotateOverlay(w, h) {
+            if (!rotateOverlayEl) return;
+            const isPortrait = h > w;
+            const isSmallDevice = Math.min(w, h) <= 900; // PCモニターの縦置きは対象外にする簡易判定
+            const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+            const shouldShow = isPortrait && isSmallDevice && isTouchDevice;
+            rotateOverlayEl.classList.toggle('show', shouldShow);
+        }
+
+        let resizeDebounceTimer = null;
+        function scheduleStageUpdate() {
+            if (resizeDebounceTimer) cancelAnimationFrame(resizeDebounceTimer);
+            resizeDebounceTimer = requestAnimationFrame(updateStageScale);
+        }
+
+        window.addEventListener('resize', scheduleStageUpdate);
+        window.addEventListener('orientationchange', () => setTimeout(updateStageScale, 250));
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', scheduleStageUpdate);
+            window.visualViewport.addEventListener('scroll', scheduleStageUpdate);
+        }
+        window.addEventListener('load', updateStageScale);
+        document.addEventListener('DOMContentLoaded', updateStageScale);
+        // 初回描画時にも即座に反映
+        updateStageScale();
 
         // ===== クリック/タップ/スライドエフェクト（波紋＋ハート） =====
         function spawnRipple(x, y) {
@@ -1403,6 +1542,7 @@
             document.getElementById('titleScreen').style.display = 'none';
             document.getElementById('gameScreen').classList.add('active');
             document.getElementById('novelContainer').style.backgroundImage = `url('${SKY_BG}')`;
+            preloadSprites();
             updateDevFlagsDisplay();
             updateDevAudioInfo();
 
@@ -1445,11 +1585,50 @@
             startTypewriter(textStr);
         }
 
-        function setSprite(imgElement, src, posClass, height = '95vh', bottom = '50px') {
-            imgElement.src = src;
-            imgElement.className = `character-sprite active ${posClass}`;
+        // ===== 立ち絵プリロード =====
+        // スマホ回線が遅いと、新しい立ち絵のデコードが完了する前に画面へ反映してしまい、
+        // 「一瞬だけ前のキャラの絵（例：女神）が見えてから新しい絵（例：アキラ）に切り替わる」
+        // というちらつきが発生することがある。ゲーム開始前に立ち絵を全てあらかじめ読み込んで
+        // ブラウザにキャッシュさせておくことで、これを防止する。
+        const SPRITE_IMAGE_LIST = [GODDESS_IMAGE, AKIRA_IMAGE, SUGURU_IMAGE, JINNA_IMAGE, RIKO_IMAGE, konoha_image];
+        let spritesPreloaded = false;
+        function preloadSprites() {
+            if (spritesPreloaded) return;
+            spritesPreloaded = true;
+            SPRITE_IMAGE_LIST.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        }
+
+        function setSprite(imgElement, src, posClass, height = '95%', bottom = '50px') {
             imgElement.style.height = height;
             imgElement.style.bottom = bottom;
+
+            const applyActive = () => {
+                imgElement.className = `character-sprite active ${posClass}`;
+            };
+
+            // 既に同じ画像が表示済みの場合は、位置クラスだけ更新してそのまま反映する
+            const isSameImage = imgElement.getAttribute('data-src') === src;
+            if (isSameImage && imgElement.complete) {
+                applyActive();
+                return;
+            }
+
+            // 画像切り替え時のちらつき（前のキャラの絵が一瞬見えてしまう現象）を防ぐため、
+            // 新しい画像のデコードが完了してから active クラス（表示）を付与する
+            imgElement.classList.remove('active');
+            imgElement.setAttribute('data-src', src);
+            imgElement.src = src;
+
+            if (imgElement.decode) {
+                imgElement.decode().then(applyActive).catch(applyActive);
+            } else if (imgElement.complete) {
+                applyActive();
+            } else {
+                imgElement.onload = applyActive;
+            }
         }
 
         function hideSprites() {
@@ -1489,78 +1668,78 @@
                 setSprite(s1, GODDESS_IMAGE, 'center-pos');
             } else if (currentIndex >= 27 && currentIndex <= 30) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'center-pos', '135vh', '-52vh');
+                setSprite(s1, AKIRA_IMAGE, 'center-pos', '135%', '-52%');
             } else if (currentIndex >= 31 && currentIndex <= 49) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'left-pos', '135vh', '-52vh');
-                setSprite(s2, SUGURU_IMAGE, 'right-pos', '135vh', '-52vh');
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '135%', '-52%');
+                setSprite(s2, SUGURU_IMAGE, 'right-pos', '135%', '-52%');
             } else if (currentIndex >= 50 && currentIndex <= 68) {
                 hideSprites();
-                setSprite(s1, JINNA_IMAGE, 'pos-4-1', '135vh', '-52vh');
-                setSprite(s2, RIKO_IMAGE, 'pos-4-2', '135vh', '-52vh');
-                setSprite(s3, AKIRA_IMAGE, 'pos-4-3', '135vh', '-52vh');
-                setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '135vh', '-52vh');
+                setSprite(s1, JINNA_IMAGE, 'pos-4-1', '135%', '-52%');
+                setSprite(s2, RIKO_IMAGE, 'pos-4-2', '135%', '-52%');
+                setSprite(s3, AKIRA_IMAGE, 'pos-4-3', '135%', '-52%');
+                setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '135%', '-52%');
             } else if (currentIndex >= 69 && currentIndex <= 72) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'left-pos', '135vh', '-52vh');
-                setSprite(s2, SUGURU_IMAGE, 'right-pos', '135vh', '-52vh');
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '135%', '-52%');
+                setSprite(s2, SUGURU_IMAGE, 'right-pos', '135%', '-52%');
             } else if (currentIndex >= 73 && currentIndex <= 86) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'left-pos', '135vh', '-52vh');
-                setSprite(s2, SUGURU_IMAGE, 'right-pos', '135vh', '-52vh');
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '135%', '-52%');
+                setSprite(s2, SUGURU_IMAGE, 'right-pos', '135%', '-52%');
             } else if (currentIndex === 89) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'center-pos', '135vh', '-52vh');
+                setSprite(s1, AKIRA_IMAGE, 'center-pos', '135%', '-52%');
             } else if (currentIndex === 90) {
                 hideSprites();
-                setSprite(s1, SUGURU_IMAGE, 'center-pos', '135vh', '-52vh');
+                setSprite(s1, SUGURU_IMAGE, 'center-pos', '135%', '-52%');
             } else if (currentIndex === 91 || currentIndex === 94) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'center-pos', '135vh', '-52vh');
+                setSprite(s1, AKIRA_IMAGE, 'center-pos', '135%', '-52%');
             } else if (currentIndex === 96) {
                 hideSprites();
-                setSprite(s1, SUGURU_IMAGE, 'center-pos', '135vh', '-52vh');
+                setSprite(s1, SUGURU_IMAGE, 'center-pos', '135%', '-52%');
             } else if (currentIndex >= 97 && currentIndex <= 99) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'left-pos', '135vh', '-52vh');
-                setSprite(s2, SUGURU_IMAGE, 'right-pos', '135vh', '-52vh');
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '135%', '-52%');
+                setSprite(s2, SUGURU_IMAGE, 'right-pos', '135%', '-52%');
             } else if (currentIndex >= 101 && currentIndex <= 104) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'center-pos', '135vh', '-52vh');
+                setSprite(s1, AKIRA_IMAGE, 'center-pos', '135%', '-52%');
             } else if (currentIndex >= 105 && currentIndex <= 109) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'left-pos', '135vh', '-52vh');
-                setSprite(s2, SUGURU_IMAGE, 'right-pos', '135vh', '-52vh');
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '135%', '-52%');
+                setSprite(s2, SUGURU_IMAGE, 'right-pos', '135%', '-52%');
             } else if (currentIndex >= 110 && currentIndex <= 119) {
                 hideSprites();
-                setSprite(s1, SUGURU_IMAGE, 'center-pos', '135vh', '-52vh');
+                setSprite(s1, SUGURU_IMAGE, 'center-pos', '135%', '-52%');
             } else if (currentIndex >= 115 && currentIndex <= 129) {
                 hideSprites();
-                setSprite(s1, JINNA_IMAGE, 'pos-4-1', '135vh', '-52vh');
-                setSprite(s2, RIKO_IMAGE, 'pos-4-2', '135vh', '-52vh');
-                setSprite(s3, AKIRA_IMAGE, 'pos-4-3', '135vh', '-52vh');
-                setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '135vh', '-52vh');
+                setSprite(s1, JINNA_IMAGE, 'pos-4-1', '135%', '-52%');
+                setSprite(s2, RIKO_IMAGE, 'pos-4-2', '135%', '-52%');
+                setSprite(s3, AKIRA_IMAGE, 'pos-4-3', '135%', '-52%');
+                setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '135%', '-52%');
             } else if (currentIndex >= 130 && currentIndex <= 138) {
                 hideSprites();
-                setSprite(s1, JINNA_IMAGE, 'pos-4-1', '135vh', '-52vh');
-                setSprite(s2, RIKO_IMAGE, 'pos-4-2', '135vh', '-52vh');
-                setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '135vh', '-52vh');
+                setSprite(s1, JINNA_IMAGE, 'pos-4-1', '135%', '-52%');
+                setSprite(s2, RIKO_IMAGE, 'pos-4-2', '135%', '-52%');
+                setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '135%', '-52%');
             } else if (currentIndex >= 139 && currentIndex <= 151) {
                 hideSprites();
-                setSprite(s1, JINNA_IMAGE, 'pos-4-1', '135vh', '-52vh');
-                setSprite(s2, RIKO_IMAGE, 'pos-4-2', '135vh', '-52vh');
-                setSprite(s3, AKIRA_IMAGE, 'pos-4-3', '135vh', '-52vh');
-                setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '135vh', '-52vh');
+                setSprite(s1, JINNA_IMAGE, 'pos-4-1', '135%', '-52%');
+                setSprite(s2, RIKO_IMAGE, 'pos-4-2', '135%', '-52%');
+                setSprite(s3, AKIRA_IMAGE, 'pos-4-3', '135%', '-52%');
+                setSprite(s4, SUGURU_IMAGE, 'pos-4-4', '135%', '-52%');
             } else if (currentIndex >= 154 && currentIndex <= 163) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'center-pos', '135vh', '-52vh');
+                setSprite(s1, AKIRA_IMAGE, 'center-pos', '135%', '-52%');
             } else if (currentIndex >= 166 && currentIndex <= 192) {
                 hideSprites();
-                setSprite(s1, AKIRA_IMAGE, 'left-pos', '135vh', '-52vh');
-                setSprite(s2, SUGURU_IMAGE, 'right-pos', '135vh', '-52vh');
+                setSprite(s1, AKIRA_IMAGE, 'left-pos', '135%', '-52%');
+                setSprite(s2, SUGURU_IMAGE, 'right-pos', '135%', '-52%');
             } else if (currentIndex >= 197) {
                 hideSprites();
-                setSprite(s1, konoha_image, 'center-pos', '135vh', '-52vh');
+                setSprite(s1, konoha_image, 'center-pos', '135%', '-52%');
             } else {
                 hideSprites();
             }
@@ -1778,6 +1957,7 @@
             document.getElementById('titleScreen').style.display = 'none';
             document.getElementById('gameScreen').classList.add('active');
             document.getElementById('novelContainer').style.backgroundImage = data.bg;
+            preloadSprites();
             processScenario(true);
             updateDevFlagsDisplay();
         }
@@ -1915,6 +2095,7 @@
             document.getElementById('titleScreen').style.display = 'none';
             document.getElementById('gameScreen').classList.add('active');
             document.getElementById('novelContainer').style.backgroundImage = `url('${bgUrl}')`;
+            preloadSprites();
 
             currentIndex = idx;
             isWaitingForInput = false;
@@ -1994,6 +2175,7 @@
             document.getElementById('titleScreen').style.display = 'none';
             document.getElementById('gameScreen').classList.add('active');
             document.getElementById('novelContainer').style.backgroundImage = data.bg;
+            preloadSprites();
             isWaitingForInput = false;
             isTyping = false;
             processScenario(true);

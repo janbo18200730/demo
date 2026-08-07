@@ -46,34 +46,42 @@
         #mainBg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://min-chi.material.jp/mc/materials/background-c/school_in_spring/_school_in_spring_1.jpg') center/cover no-repeat; z-index: 0; }
         #mainBg::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.3); }
 
+        /* タイトル画面：ステージ内で常に中央（縦横とも）に来るように配置する */
         #titleScreen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
             animation: titleFadeInDown 1s ease-out;
         }
         @keyframes titleFadeInDown {
-            from { opacity: 0; transform: translateY(-40px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translate(-50%, calc(-50% - 40px)); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
         }
 
         /* UIパーツ */
-        .title-image { max-width: 550px; width: 90%; margin-bottom: 5rem; filter: drop-shadow(0 5px 15px rgba(255,105,180,0.4)); }
+        /* --ui-boost: スマホ等でキャンバス全体の縮小率が大きい時に、文字や画像・ボタンが
+           必要以上に小さくなりすぎないよう、その分を打ち消して拡大するための倍率（JSで算出） */
+        .title-image { max-width: calc(550px * var(--ui-boost, 1)); width: 90%; margin-bottom: calc(5rem * var(--ui-boost, 1)); filter: drop-shadow(0 5px 15px rgba(255,105,180,0.4)); }
         
         .title-btn {
-            padding: 1rem 3rem;
-            font-size: 1.4rem;
+            padding: calc(1rem * var(--ui-boost, 1)) calc(3rem * var(--ui-boost, 1));
+            font-size: calc(1.4rem * var(--ui-boost, 1));
             font-weight: 700;
             color: #ff1493;
             background: linear-gradient(135deg, #fff0f5 0%, #ffe4e9 100%);
-            border: 3px solid #ffb3d9;
+            border: calc(3px * var(--ui-boost, 1)) solid #ffb3d9;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 300px;
+            width: calc(300px * var(--ui-boost, 1));
             font-family: 'M PLUS Rounded 1c', 'Meiryo', sans-serif;
             box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3),
                         inset 0 2px 5px rgba(255, 255, 255, 0.8);
             position: relative;
             overflow: hidden;
-            margin-bottom: 15px;
+            margin-bottom: calc(15px * var(--ui-boost, 1));
             display: block;
             letter-spacing: 0.05em;
         }
@@ -696,6 +704,7 @@
         bgm.volume = 0.10;
 
         // ===== タイトルコール機能 =====
+        // janbo.mp3は1%、あらず１.mp3は0.5%の特別枠として登場し、それ以外の10種は残り98.5%を均等に分け合う
         const titleCallVoices = ["さばめんスクール さっぱり.mp3", "さばすくタイトルコール cv力一.mp3", "鯖メンスクール！＠さわやか.mp3", "さばめんスクール 元気め.mp3", "さばすくっ.mp3", "鯖メンスクール＠ネッチョリ.mp3", "鯖メンスクール_高め.mp3", "鯖メンスクール_低め.mp3", "あらず２.mp3", "あらず３.mp3"];
         const RARE_TITLE_CALL_VOICE = "janbo.mp3";
         const RARE_TITLE_CALL_CHANCE = 0.01; // 1%
